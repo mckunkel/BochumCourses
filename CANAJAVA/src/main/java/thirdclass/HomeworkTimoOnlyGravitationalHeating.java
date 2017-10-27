@@ -7,7 +7,16 @@ import domain.utils.Constants;
 import domain.utils.SaveCanvas;
 
 public class HomeworkTimoOnlyGravitationalHeating {
-
+	// Remarks from MK
+	// Well constructed program
+	// Why was canvas.dispose() needed?
+	// I gave extra credit for the axes labels, marker style and color
+	// You forgot the units on your axis
+	// i.e. radius is in units of km? m? s? furlongs?
+	// Answer radius/radius = arbitrary units
+	// time was in what units? gargles? Han Solo parsecs?
+	// Answer n*solar_age [years]
+	// grade 1.15/1.0
 	static public double returnRadius(double tsun) {
 		// input: multiple of current solar age
 		// output: solar radius in percent of actual radius assuming gravitational
@@ -45,7 +54,7 @@ public class HomeworkTimoOnlyGravitationalHeating {
 		canv.draw(gr);
 		SaveCanvas.saveCanvas(canv);
 
-		canv.dispose(); // shows empty window otherwise
+		// canv.dispose(); // shows empty window otherwise
 	}
 
 	public static void main(String[] args) {

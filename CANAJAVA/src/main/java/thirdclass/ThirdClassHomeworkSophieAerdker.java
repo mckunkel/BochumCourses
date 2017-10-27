@@ -6,7 +6,15 @@ import org.jlab.groot.ui.TCanvas;
 import domain.utils.Constants;
 
 public class ThirdClassHomeworkSophieAerdker {
-
+	// Remarks from MK
+	// Well constructed program
+	// I gave extra credit for the axes labels, marker style and color
+	// You forgot the units on your axis
+	// i.e. radius is in units of km? m? s? furlongs?
+	// Answer radius/radius = arbitrary units
+	// time was in what units? gargles? Han Solo parsecs?
+	// Answer n*solar_age [years]
+	// grade 1.15/1.0
 	public static double radius(int x) {
 
 		double gravConstant = Constants.gravitationalConstant;
