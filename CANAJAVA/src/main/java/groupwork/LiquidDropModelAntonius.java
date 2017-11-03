@@ -3,7 +3,7 @@ package groupwork;
 import org.jlab.groot.data.H2F;
 import org.jlab.groot.ui.TCanvas;
 
-public class LiquidDropModel {
+public class LiquidDropModelAntonius {
 	
 	public static double aV = 15.5;
 	public static double aS = 16.8;
