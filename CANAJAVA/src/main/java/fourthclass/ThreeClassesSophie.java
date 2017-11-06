@@ -40,4 +40,8 @@ public class ThreeClassesSophie {
 
 	}
 
+	// Very good, hopefully later you will see how to make this homework easier
+	// using polymorphism
+	// grade 1.0/1.0
+
 }
