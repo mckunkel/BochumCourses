@@ -22,13 +22,12 @@ public class OnlyGravitationalHeating_HomeworkAntonius {
 	// Answer n*solar_age [years]
 	// grade 1.15/1.0
 	public static void main(String[] args) {
-		OnlyGravitationalHeating_HomeworkAntonius onlyGravitationalHeating = new OnlyGravitationalHeating_HomeworkAntonius();
-
+		
 		GraphErrors gr = new GraphErrors();
 
 		for (int i = 1; i <= 20; i++) {
-			System.out.println(onlyGravitationalHeating.radius(i));
-			gr.addPoint(i, onlyGravitationalHeating.radius(i) / Constants.solarRadius, 0., 0.);
+			System.out.println(radius(i));
+			gr.addPoint(i, radius(i) / Constants.solarRadius, 0., 0.);
 		}
 
 		gr.setTitle("Theoretical solar radius if the sun relied only on gravitational heating.");
@@ -44,11 +43,11 @@ public class OnlyGravitationalHeating_HomeworkAntonius {
 		canvas.dispose();
 	}
 
-	public double radius() {
+	public static double radius() {
 		return radius(1);
 	}
 
-	public double radius(int x) {
+	public static double radius(int x) {
 		double ageOfSun = Constants.ageOfSun * Constants.yearToSeconds;
 		double solarLuminosity = Constants.solarLuminosity * Constants.ergToJoule;
 

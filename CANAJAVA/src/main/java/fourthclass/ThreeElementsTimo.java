@@ -44,6 +44,11 @@ public class ThreeElementsTimo {
 		System.out.println("Stable isotopes: M = " + Arrays.toString(li7.getIsotopesM()) + " GeV");
 
 		System.out.println(" ");
+
+		// Very good
+		// Hopefully later, you will see how you can make this homeowrk much easier with
+		// polymorphism
+		// grade 1.0/1.0
 	}
 
 }
