@@ -4,7 +4,6 @@ import org.jlab.groot.data.GraphErrors;
 import org.jlab.groot.ui.TCanvas;
 
 import domain.utils.Constants;
-import domain.utils.SaveCanvas;
 
 public class Exercise2ThermalEquilibrium {
 	// The exercise says that B is stable. If this is the case and there is
@@ -64,7 +63,8 @@ public class Exercise2ThermalEquilibrium {
 		double ret = gA * gB / gC * Math.pow(mA * mB / mC * 1e9 * e / (c * c), 3. / 2.)
 				* Math.pow(T * 1e6 * e / (2 * Math.PI * hbar * hbar), 3. / 2.) * Math.exp(-QABC / T);
 
-		return ret / 1e42; // The method is returning HUGE values, probably a mistake somewhere with the
+		return ret / 1e42; // The method is returning HUGE values, probably a
+							// mistake somewhere with the
 							// units
 		// I'm running out of time though, so this issue has to remain unsolved.
 	}
@@ -75,7 +75,8 @@ public class Exercise2ThermalEquilibrium {
 
 		GraphErrors gr = new GraphErrors();
 
-		// logarithmic scaling would be better, but I did not find a suitable option
+		// logarithmic scaling would be better, but I did not find a suitable
+		// option
 		// for GraphErrors objects..
 		for (int i = 0; i < 1001; i++) {
 
@@ -93,8 +94,8 @@ public class Exercise2ThermalEquilibrium {
 		TCanvas canvas = new TCanvas("Exercise 2a Timo", 800, 600);
 
 		canvas.draw(gr);
-		SaveCanvas.saveCanvas(canvas);
-		canvas.dispose();
+		// SaveCanvas.saveCanvas(canvas);
+		// canvas.dispose();
 
 	}
 
@@ -104,7 +105,8 @@ public class Exercise2ThermalEquilibrium {
 
 		GraphErrors gr = new GraphErrors();
 
-		// logarithmic scaling would be better, but I did not find a suitable option
+		// logarithmic scaling would be better, but I did not find a suitable
+		// option
 		// for GraphErrors objects..
 		for (int i = 0; i < 1001; i++) {
 
@@ -122,8 +124,8 @@ public class Exercise2ThermalEquilibrium {
 		TCanvas canvas = new TCanvas("Exercise 2b Timo", 800, 600);
 
 		canvas.draw(gr);
-		SaveCanvas.saveCanvas(canvas);
-		canvas.dispose();
+		// SaveCanvas.saveCanvas(canvas);
+		// canvas.dispose();
 
 	}
 

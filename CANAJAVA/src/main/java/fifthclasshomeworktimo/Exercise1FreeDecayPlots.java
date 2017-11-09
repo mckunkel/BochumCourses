@@ -3,8 +3,6 @@ package fifthclasshomeworktimo;
 import org.jlab.groot.data.GraphErrors;
 import org.jlab.groot.ui.TCanvas;
 
-import domain.utils.SaveCanvas;
-
 public class Exercise1FreeDecayPlots {
 	// The different plots for varying time constants
 	// are produced in a static method and saved as pdf.
@@ -27,7 +25,8 @@ public class Exercise1FreeDecayPlots {
 
 		for (int i = 0; i < 2000; i++) {
 
-			b.addN(a.decay(dt)); // add number of decayed A nuclides to number of B
+			b.addN(a.decay(dt)); // add number of decayed A nuclides to number
+									// of B
 			c.addN(b.decay(dt));
 
 			gra.addPoint(i * dt, a.getN(), 0, 0);
@@ -54,9 +53,9 @@ public class Exercise1FreeDecayPlots {
 		canvas.draw(grb, "same");
 		canvas.draw(grc, "same");
 
-		SaveCanvas.saveCanvas(canvas);
+		// SaveCanvas.saveCanvas(canvas);
 
-		canvas.dispose();
+		// canvas.dispose();
 
 	}
 
