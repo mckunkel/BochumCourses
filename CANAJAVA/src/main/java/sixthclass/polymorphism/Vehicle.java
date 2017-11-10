@@ -10,10 +10,21 @@
  * (________(                @author m.c.kunkel
  *  `------'
 */
-package sixthclass;
+package sixthclass.polymorphism;
 
-public class MotorCycle extends Vehicle {
+public class Vehicle {
+	void startEngine() {
+		System.out.println("Starting Engine");
+	}
+
+	void stopEngine() {
+		System.out.println("Stopping Engine");
+	}
+
+	void idleEngine() {
+		System.out.println("Engine is idle");
+	}
+
 	void engineSound() {
-		System.out.println("Brrrraaaapppppp");
 	}
 }

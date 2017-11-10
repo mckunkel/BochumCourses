@@ -10,7 +10,7 @@
  * (________(                @author m.c.kunkel
  *  `------'
 */
-package sixthclass;
+package sixthclass.polymorphism;
 
 public class Truck extends Vehicle {
 	void engineSound() {
