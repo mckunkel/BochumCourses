@@ -10,10 +10,10 @@
  * (________(                @author m.c.kunkel
  *  `------'
 */
-package sixthclass;
+package sixthclass.polymorphism;
 
-public class Car extends Vehicle {
+public class MotorCycle extends Vehicle {
 	void engineSound() {
-		System.out.println("Vrrooooom");
+		System.out.println("Brrrraaaapppppp");
 	}
 }

@@ -10,25 +10,10 @@
  * (________(                @author m.c.kunkel
  *  `------'
 */
-package sixthclass;
+package sixthclass.polymorphism;
 
-public class UpDownCasting {
-	public static void main(String[] args) {
-		Vehicle vehicle = new Vehicle();
-		Car car = (Car) vehicle;
-	}
-
-	private void downCast() {
-		Vehicle vehicle = new Vehicle();
-		Car car = (Car) vehicle;
-		// or
-		Vehicle vehicle2 = new Car();
-		Car car2 = (Car) vehicle2;
-	}
-
-	private void upCast() {
-		Car car = new Car();
-		Vehicle vehicle = (Car) car;
-
+public class Car extends Vehicle {
+	void engineSound() {
+		System.out.println("Vrrooooom");
 	}
 }
