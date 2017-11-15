@@ -13,18 +13,18 @@
 package sixthclass.polymorphism;
 
 public class Vehicle {
-	void startEngine() {
+	public void startEngine() {
 		System.out.println("Starting Engine");
 	}
 
-	void stopEngine() {
+	public void stopEngine() {
 		System.out.println("Stopping Engine");
 	}
 
-	void idleEngine() {
+	public void idleEngine() {
 		System.out.println("Engine is idle");
 	}
 
-	void engineSound() {
+	public void engineSound() {
 	}
 }
