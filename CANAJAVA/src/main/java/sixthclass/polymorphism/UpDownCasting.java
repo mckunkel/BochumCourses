@@ -38,7 +38,7 @@ public class UpDownCasting {
 		if (vehicle2 instanceof Car) {
 			Car car = (Car) vehicle2;
 			car.engineSound();
-		} else if (vehicle2 instanceof Car) {
+		} else if (vehicle2 instanceof MotorCycle) {
 			MotorCycle motorCycle2 = (MotorCycle) vehicle2;
 			motorCycle2.engineSound();
 		}

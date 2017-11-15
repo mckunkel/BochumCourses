@@ -13,7 +13,7 @@
 package sixthclass.polymorphism;
 
 public class Car extends Vehicle {
-	void engineSound() {
+	public void engineSound() {
 		System.out.println("Vrrooooom");
 	}
 }
