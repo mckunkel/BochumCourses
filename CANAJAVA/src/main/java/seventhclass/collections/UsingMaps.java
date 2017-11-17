@@ -1,4 +1,4 @@
-package sixthclass.collections;
+package seventhclass.collections;
 
 import java.util.ArrayList;
 import java.util.Arrays;
