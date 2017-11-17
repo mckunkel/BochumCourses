@@ -36,7 +36,7 @@ public class LiquidDropModel {
 			ret -= delta;
 		}
 
-		return ret / 1000.;
+		return ret;
 	}
 
 	public static void plotHistogram() {
