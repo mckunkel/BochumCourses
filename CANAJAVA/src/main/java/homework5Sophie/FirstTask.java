@@ -1,5 +1,7 @@
 package homework5Sophie;
 
+//grade 1.0
+//well documented classes
 public class FirstTask {
 
 	public static void main(String[] args) {

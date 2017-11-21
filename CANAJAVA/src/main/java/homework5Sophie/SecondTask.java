@@ -1,5 +1,7 @@
 package homework5Sophie;
 
+//grade 1.0
+//well documented classes
 public class SecondTask {
 
 	public static void main(String[] args) {
@@ -12,17 +14,20 @@ public class SecondTask {
 		double Q = 1.8; // MeV
 
 		// plot time dependency of A/B:
-		// A -> B and B is stable -> no inverse reaction and therefore no equilibrium
+		// A -> B and B is stable -> no inverse reaction and therefore no
+		// equilibrium
 		// because simply all of A decays to B with the half-live tau_A
 
 		PlotAmount reaction1 = new PlotAmount(tau_A, tau_B, delta_t, limit_t);
 		reaction1.plotAB();
 
 		// to get a temperature dependency:
-		// The mass defect is M_a - M_b = 1.8 MeV/c^2, so that the Q value is equal to
+		// The mass defect is M_a - M_b = 1.8 MeV/c^2, so that the Q value is
+		// equal to
 		// 1.8MeV and every time A decays to B
 		// the energy 1.8MeV is released in form of
-		// thermal energy (exotherm), thus the temperature increases, with time t or
+		// thermal energy (exotherm), thus the temperature increases, with time
+		// t or
 		// with the amount of B:
 
 		ThermalReaction reaction2 = new ThermalReaction(tau_A, tau_B, A_0, Q);
