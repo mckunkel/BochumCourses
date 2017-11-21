@@ -1,5 +1,7 @@
 package homework5Sophie;
 
+//grade 1.0
+//well documented classes
 import org.jlab.groot.data.GraphErrors;
 import org.jlab.groot.ui.TCanvas;
 

@@ -1,5 +1,6 @@
 package homework6Sophie;
 
+//grade 1.0
 import org.jlab.groot.data.GraphErrors;
 import org.jlab.groot.ui.TCanvas;
 
@@ -43,10 +44,14 @@ public class CalculateHubbleConstant {
 		double meanHubbleConstant = gradientSum / 6; // km/(s*MPc)
 		System.out.println("The calculated mean Hubble Constant is: " + meanHubbleConstant + " km*s^(-1)/MPc");
 
-		double ageOfUniverse = 1 / (meanHubbleConstant); // s*MPc/km = s*10^6*3,086e+13 km/km
+		double ageOfUniverse = 1 / (meanHubbleConstant); // s*MPc/km =
+															// s*10^6*3,086e+13
+															// km/km
 		ageOfUniverse = 3.086 * Math.pow(10, 19) * ageOfUniverse / Constants.yearToSeconds; // years
 
-		double ageOfUniverse_literature = 1.3799E10; // best estimate of the age with combined data, 15.11.27,
+		double ageOfUniverse_literature = 1.3799E10; // best estimate of the age
+														// with combined data,
+														// 15.11.27,
 														// https://en.wikipedia.org/wiki/Age_of_the_universe
 
 		System.out.println("The calculated age of the universe is: " + ageOfUniverse + " years");
