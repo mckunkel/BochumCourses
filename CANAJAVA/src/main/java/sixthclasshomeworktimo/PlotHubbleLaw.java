@@ -1,5 +1,6 @@
 package sixthclasshomeworktimo;
 
+//grade 1.0
 import org.jlab.groot.data.GraphErrors;
 import org.jlab.groot.fitter.DataFitter;
 import org.jlab.groot.math.F1D;

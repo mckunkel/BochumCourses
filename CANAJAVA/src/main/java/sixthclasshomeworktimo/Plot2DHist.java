@@ -3,6 +3,7 @@ package sixthclasshomeworktimo;
 import org.jlab.groot.data.H2F;
 import org.jlab.groot.ui.TCanvas;
 
+//grade 1.0
 public class Plot2DHist {
 
 	static void plotHistogram() {

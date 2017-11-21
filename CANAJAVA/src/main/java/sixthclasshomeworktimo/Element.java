@@ -18,7 +18,18 @@ public class Element {
 		ret += aV * this.A;
 		ret -= aS * Math.pow(this.A, 2. / 3.);
 		ret -= aC * Math.pow(this.Z, 2.) / Math.pow(this.A, 1. / 3.);
-		ret -= aA * Math.pow((this.Z - this.N), 2) / this.A;
+		// ret -= aA * Math.pow((this.Z - this.N), 2) / this.A;
+		ret -= aA * Math.pow((this.N - this.Z), 2) / this.A; // I made this
+																// silly
+																// correction,
+																// even though
+																// its pointless
+																// in the sense
+																// of th
+																// squaring. For
+																// correctness
+																// it should be
+																// this way
 
 		int par1 = this.Z % 2;
 		int par2 = this.N % 2;

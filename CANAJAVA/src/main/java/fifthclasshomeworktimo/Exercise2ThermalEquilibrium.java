@@ -5,6 +5,8 @@ import org.jlab.groot.ui.TCanvas;
 
 import domain.utils.Constants;
 
+//grade 1.0
+//well documented
 public class Exercise2ThermalEquilibrium {
 	// The exercise says that B is stable. If this is the case and there is
 	// no reaction back to A, then there is no equilibrium state.

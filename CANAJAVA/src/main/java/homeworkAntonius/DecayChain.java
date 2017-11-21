@@ -6,6 +6,9 @@ import java.util.NoSuchElementException;
 import org.jlab.groot.data.GraphErrors;
 import org.jlab.groot.ui.TCanvas;
 
+//This was unique and fun to read
+//consider documenting your codes
+//grade 1.0
 public class DecayChain {
 
 	public static void main(String[] args) {

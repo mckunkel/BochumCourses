@@ -1,5 +1,7 @@
 package classWork6Sophie;
 
+//grade 1.0
+//I would have like to have seen a bit more abstraction and polymorphism
 import org.jlab.groot.data.H2F;
 import org.jlab.groot.ui.TCanvas;
 

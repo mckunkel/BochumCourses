@@ -1,5 +1,8 @@
 package fifthclasshomeworktimo;
 
+//grade 1.0
+//well documented
+
 import org.jlab.groot.data.GraphErrors;
 import org.jlab.groot.ui.TCanvas;
 
