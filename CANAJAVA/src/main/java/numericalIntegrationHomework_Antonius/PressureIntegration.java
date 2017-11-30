@@ -1,5 +1,11 @@
 package numericalIntegrationHomework_Antonius;
 
+import java.util.function.Function;
+
+import org.apache.commons.lang3.tuple.Pair;
+
+import domain.utils.Constants;
+
 public class PressureIntegration {
 
 	public class State extends StateVector {
@@ -25,13 +31,40 @@ public class PressureIntegration {
 		}
 	}
 
+	static double rho;
+
+	public static final Function<Pair<Double, StateVector>, StateVector> differential = state -> {
+		double r = state.getLeft();
+		double dP = -4. / 3. * Math.PI * Constants.gravitationalConstant * (rho * rho) * r;
+		return new PressureIntegration().new State(dP);
+	};
+
+	public static NumericalIntegrator makeIntegrator(double rho, double initial_radius, double initial_pressure,
+			boolean use_RK4) {
+
+		NumericalIntegrator integrator;
+
+		if (use_RK4) {
+			integrator = new RK4Integrator(-.1, initial_radius, new PressureIntegration().new State(initial_pressure),
+					differential);
+		} else {
+			integrator = new EulerIntegrator(-.1, initial_radius, new PressureIntegration().new State(initial_pressure),
+					differential);
+		}
+
+		return integrator;
+	}
+
 	public static void main(String[] args) {
-		NumericalIntegrator integrator = new EulerIntegrator(.1, 0, new PressureIntegration().new State(1.),
-				state -> new PressureIntegration().new State(state.getLeft()));
+		rho = 1.;
+
+		NumericalIntegrator integrator = makeIntegrator(rho, 100., 1, true);
 
 		for (int i = 0; i < 1000; i++) {
 			integrator.step();
+			System.out.println();
 			System.out.println(((State) integrator.getState()).getP());
+			System.out.println(integrator.getT());
 		}
 
 	}
