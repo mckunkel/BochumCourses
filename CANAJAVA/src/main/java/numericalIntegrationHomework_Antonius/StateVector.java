@@ -8,35 +8,22 @@ public class StateVector {
 		this.state = state;
 	}
 
-	public StateVector copy() {
-		double[] newArray = new double[this.state.length];
+	public StateVector plus(StateVector other) {
+		assert this.state.length == other.state.length;
+		double[] new_state = new double[this.state.length];
 		for (int i = 0; i < this.state.length; i++) {
-			newArray[i] = this.state[i];
-		}
-		return new StateVector(newArray);
-	}
-
-	public StateVector itimes(double factor) {
-		for (int i = 0; i < this.state.length; i++) {
-			this.state[i] *= factor;
+			new_state[i] = this.state[i] + other.state[i];
 		}
 
-		return this;
-	}
-
-	public StateVector iplus(StateVector b) {
-		for (int i = 0; i < this.state.length; i++) {
-			this.state[i] += b.state[i];
-		}
-
-		return this;
+		return new StateVector(new_state);
 	}
 
 	public StateVector times(double factor) {
-		return this.copy().itimes(factor);
-	}
+		double[] new_state = new double[this.state.length];
+		for (int i = 0; i < this.state.length; i++) {
+			new_state[i] = factor * this.state[i];
+		}
 
-	public StateVector plus(StateVector b) {
-		return this.copy().iplus(b);
+		return new StateVector(new_state);
 	}
 }

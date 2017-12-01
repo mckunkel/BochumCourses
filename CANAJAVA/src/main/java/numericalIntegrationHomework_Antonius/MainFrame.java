@@ -8,9 +8,10 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 
-public class MainFrame extends JFrame {
+public class MainFrame extends JFrame implements IntegrationStepEventListener {
 
 	private JPanel contentPane;
 	private JLabel densityLabel;
@@ -26,11 +27,18 @@ public class MainFrame extends JFrame {
 	private JLabel finalPressureLabel;
 	private JLabel finalPressureResult;
 	private JButton runButton;
+	private JProgressBar progressBar;
+
+	private boolean running;
+	private NumericalIntegrator integrator;
+	private Thread simulationThread;
+	private double startingT;
 
 	public MainFrame() {
 		super("Pressure Integration");
 		initializeVariables();
 		constructLayout();
+		setListeners();
 		constructAppWindow();
 	}
 
@@ -49,6 +57,66 @@ public class MainFrame extends JFrame {
 		finalPressureLabel = new JLabel("final pressure");
 		finalPressureResult = new JLabel();
 		runButton = new JButton("Run");
+		runButton.setActionCommand("run");
+		progressBar = new JProgressBar();
+	}
+
+	private void setListeners() {
+		runButton.addActionListener(e -> {
+			if (e.getActionCommand() == "run") {
+				startSimulation();
+			} else if (e.getActionCommand() == "stop") {
+				stopSimulation();
+			}
+		});
+	}
+
+	private void startSimulation() {
+		if (running == false) {
+			startingT = Double.parseDouble(radiusField.getText());
+			integrator = PressureIntegrator.makePressureIntegrator(Double.parseDouble(densityField.getText()),
+					Double.parseDouble(radiusField.getText()), Double.parseDouble(finalRadiusField.getText()),
+					Double.parseDouble(finalRadiusField.getText()), true);
+			integrator.addListener(this);
+			simulationThread = new Thread() {
+				public void run() {
+					integrator.run();
+				}
+			};
+			simulationThread.start();
+			uiStartRunning();
+		}
+	}
+
+	private void uiStartRunning() {
+		running = true;
+		runButton.setText("Stop");
+		runButton.setActionCommand("stop");
+		densityField.setEditable(false);
+		pressureField.setEditable(false);
+		radiusField.setEditable(false);
+		stepSizeField.setEditable(false);
+		finalRadiusField.setEditable(false);
+	}
+
+	private void uiStopRunning() {
+		running = false;
+		runButton.setText("Run");
+		runButton.setActionCommand("run");
+		densityField.setEditable(true);
+		pressureField.setEditable(true);
+		radiusField.setEditable(true);
+		stepSizeField.setEditable(true);
+		finalRadiusField.setEditable(true);
+	}
+
+	private void stopSimulation() {
+		if (running == true) {
+			// TODO: stop simulation thread
+			integrator.stop();
+			integrator.removeListener(this);
+			uiStopRunning();
+		}
 	}
 
 	public void constructLayout() {
@@ -92,6 +160,9 @@ public class MainFrame extends JFrame {
 
 		contentPane.add(runButton, new GridBagConstraints(0, 6, 2, 1, 0., 0., GridBagConstraints.CENTER,
 				GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
+
+		contentPane.add(progressBar, new GridBagConstraints(0, 7, 2, 1, 0., 0., GridBagConstraints.CENTER,
+				GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
 	}
 
 	public void constructAppWindow() {
@@ -100,5 +171,22 @@ public class MainFrame extends JFrame {
 		pack();
 		setSize(640, 400);
 		setVisible(true);
+	}
+
+	@Override
+	public void nextIntegrationStep(IntegrationStepEvent event) {
+		if (event.finished == true) {
+			integrator.removeListener(this);
+			uiStopRunning();
+			finalPressureResult.setText(String.format("%.4f", event.integrationState.stateVector.state[0]));
+		} else {
+			finalPressureResult.setText(String.format("%.4f", event.integrationState.stateVector.state[0]));
+			int progress = (int) Math
+					.round(Math.abs(event.integrationState.t / (integrator.getFinal_t() - startingT) * 100));
+			if (integrator.getDt() < 0) {
+				progress = 100 - progress;
+			}
+			progressBar.setValue(progress);
+		}
 	}
 }
