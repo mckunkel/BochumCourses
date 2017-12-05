@@ -2,7 +2,7 @@ package eigthclasshomeworktimo;
 
 import domain.utils.Constants;
 
-public class IntegrateODE {
+public class SimpleIntegrateODE {
 
 	protected static double dpdr(double r, double rho) {
 		double G = Constants.gravitationalConstant;

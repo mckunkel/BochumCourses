@@ -13,7 +13,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-public class PressureGUI extends JFrame {
+public class SimplePressureGUI extends JFrame {
 
 	private JPanel aJPanel;
 	private JLabel aJLabel1;
@@ -47,7 +47,7 @@ public class PressureGUI extends JFrame {
 		this.aJComboBox = new JComboBox<>(methodnames);
 		this.aJButton = new JButton("Calculate pressure in Pa");
 		this.aJButton.addActionListener(
-				e -> System.out.println(IntegrateODE.iterateToR(Double.parseDouble(this.aJTextField1.getText()),
+				e -> System.out.println(SimpleIntegrateODE.iterateToR(Double.parseDouble(this.aJTextField1.getText()),
 						Double.parseDouble(this.aJTextField2.getText()),
 						Double.parseDouble(this.aJTextField3.getText()), Integer.parseInt(this.aJTextField4.getText()),
 						(String) this.aJComboBox.getSelectedItem())));
@@ -82,7 +82,7 @@ public class PressureGUI extends JFrame {
 
 	}
 
-	public PressureGUI() {
+	public SimplePressureGUI() {
 		super("PressureGUI");
 		init();
 		constructWindow();
@@ -109,7 +109,7 @@ public class PressureGUI extends JFrame {
 		SwingUtilities.invokeLater(new Runnable() {
 
 			public void run() {
-				new PressureGUI();
+				new SimplePressureGUI();
 			}
 		});
 	}
