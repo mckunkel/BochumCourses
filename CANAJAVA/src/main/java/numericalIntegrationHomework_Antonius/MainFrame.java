@@ -4,29 +4,27 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import javax.swing.JTextField;
 
 public class MainFrame extends JFrame implements IntegrationStepEventListener {
 
 	private JPanel contentPane;
 	private JLabel densityLabel;
-	private JTextField densityField;
+	private DoubleField densityField;
 	private JLabel pressureLabel;
-	private JTextField pressureField;
+	private DoubleField pressureField;
 	private JLabel radiusLabel;
-	private JTextField radiusField;
+	private DoubleField radiusField;
 	private JLabel finalRadiusLabel;
-	private JTextField finalRadiusField;
+	private DoubleField finalRadiusField;
 	private JLabel stepSizeLabel;
-	private JTextField stepSizeField;
+	private DoubleField stepSizeField;
 	private JLabel finalPressureLabel;
 	private JLabel finalPressureResult;
-	private JButton runButton;
+	private ConditionalButton runButton;
 	private JProgressBar progressBar;
 
 	private boolean running;
@@ -44,21 +42,42 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 
 	public void initializeVariables() {
 		contentPane = (JPanel) this.getContentPane();
+
 		densityLabel = new JLabel("density");
-		densityField = new JTextField(5);
+		densityField = new DoubleField(5);
+
 		pressureLabel = new JLabel("initial pressure");
-		pressureField = new JTextField(5);
+		pressureField = new DoubleField(5);
+
 		radiusLabel = new JLabel("initial radius");
-		radiusField = new JTextField(5);
+		radiusField = new DoubleField(5);
+
 		finalRadiusLabel = new JLabel("final radius");
-		finalRadiusField = new JTextField(5);
+		finalRadiusField = new DoubleField(5);
+
 		stepSizeLabel = new JLabel("step size");
-		stepSizeField = new JTextField(5);
+		stepSizeField = new DoubleField(5);
+
 		finalPressureLabel = new JLabel("final pressure");
 		finalPressureResult = new JLabel();
-		runButton = new JButton("Run");
+
+		runButton = new ConditionalButton("Run");
 		runButton.setActionCommand("run");
+		runButton.addField(densityField);
+		runButton.addField(pressureField);
+		runButton.addField(radiusField);
+		runButton.addField(finalRadiusField);
+		runButton.addField(stepSizeField);
+
 		progressBar = new JProgressBar();
+
+		// use preset values that make the simulation run long enough so you can see the
+		// progress bar
+		densityField.setText("1");
+		pressureField.setText("1");
+		radiusField.setText("100000");
+		stepSizeField.setText("-0.00001");
+		finalRadiusField.setText("1");
 	}
 
 	private void setListeners() {
@@ -73,18 +92,21 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 
 	private void startSimulation() {
 		if (running == false) {
-			startingT = Double.parseDouble(radiusField.getText());
-			integrator = PressureIntegrator.makePressureIntegrator(Double.parseDouble(densityField.getText()),
-					Double.parseDouble(radiusField.getText()), Double.parseDouble(finalRadiusField.getText()),
-					Double.parseDouble(finalRadiusField.getText()), true);
-			integrator.addListener(this);
-			simulationThread = new Thread() {
-				public void run() {
-					integrator.run();
-				}
-			};
-			simulationThread.start();
-			uiStartRunning();
+			try {
+				startingT = radiusField.getValue();
+				integrator = PressureIntegrator.makePressureIntegrator(Double.parseDouble(densityField.getText()),
+						Double.parseDouble(radiusField.getText()), Double.parseDouble(finalRadiusField.getText()),
+						Double.parseDouble(finalRadiusField.getText()), true);
+				integrator.addListener(this);
+				simulationThread = new Thread() {
+					public void run() {
+						integrator.run();
+					}
+				};
+				simulationThread.start();
+				uiStartRunning();
+			} catch (NumberFormatException exception) {
+			}
 		}
 	}
 
@@ -92,6 +114,8 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 		running = true;
 		runButton.setText("Stop");
 		runButton.setActionCommand("stop");
+		runButton.setListening(false);
+		runButton.setEnabled(true);
 		densityField.setEditable(false);
 		pressureField.setEditable(false);
 		radiusField.setEditable(false);
@@ -103,6 +127,7 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 		running = false;
 		runButton.setText("Run");
 		runButton.setActionCommand("run");
+		runButton.setListening(true);
 		densityField.setEditable(true);
 		pressureField.setEditable(true);
 		radiusField.setEditable(true);
@@ -112,9 +137,7 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 
 	private void stopSimulation() {
 		if (running == true) {
-			// TODO: stop simulation thread
 			integrator.stop();
-			integrator.removeListener(this);
 			uiStopRunning();
 		}
 	}
@@ -176,7 +199,6 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 	@Override
 	public void nextIntegrationStep(IntegrationStepEvent event) {
 		if (event.finished == true) {
-			integrator.removeListener(this);
 			uiStopRunning();
 			finalPressureResult.setText(String.format("%.4f", event.integrationState.stateVector.state[0]));
 		} else {
