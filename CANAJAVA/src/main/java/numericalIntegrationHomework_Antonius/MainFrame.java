@@ -30,7 +30,9 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 	private boolean running;
 	private NumericalIntegrator integrator;
 	private Thread simulationThread;
-	private double startingT;
+	private double initialRadius;
+	private double finalRadius;
+	private double stepSize;
 
 	public MainFrame() {
 		super("Pressure Integration");
@@ -93,11 +95,13 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 	private void startSimulation() {
 		if (running == false) {
 			try {
-				startingT = radiusField.getValue();
-				integrator = PressureIntegrator.makePressureIntegrator(Double.parseDouble(densityField.getText()),
-						Double.parseDouble(radiusField.getText()), Double.parseDouble(finalRadiusField.getText()),
-						Double.parseDouble(finalRadiusField.getText()), true);
+				initialRadius = radiusField.getValue();
+				finalRadius = finalRadiusField.getValue();
+				stepSize = stepSizeField.getValue();
+				integrator = PressureIntegrator.makePressureIntegrator(densityField.getValue(), radiusField.getValue(),
+						finalRadiusField.getValue(), pressureField.getValue(), true);
 				integrator.addListener(this);
+				integrator.addListener(new FileOutputListener());
 				simulationThread = new Thread() {
 					public void run() {
 						integrator.run();
@@ -203,9 +207,8 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 			finalPressureResult.setText(String.format("%.4f", event.integrationState.stateVector.state[0]));
 		} else {
 			finalPressureResult.setText(String.format("%.4f", event.integrationState.stateVector.state[0]));
-			int progress = (int) Math
-					.round(Math.abs(event.integrationState.t / (integrator.getFinal_t() - startingT) * 100));
-			if (integrator.getDt() < 0) {
+			int progress = (int) Math.round(Math.abs(event.integrationState.t / (initialRadius - finalRadius) * 100));
+			if (stepSize < 0) {
 				progress = 100 - progress;
 			}
 			progressBar.setValue(progress);
