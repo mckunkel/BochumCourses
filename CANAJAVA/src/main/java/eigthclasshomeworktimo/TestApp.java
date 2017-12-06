@@ -11,9 +11,10 @@ public class TestApp implements IterationEventListener {
 
 	@Override
 	public void nextIteration(IterationEvent event) {
-		System.out.println("Step " + event.getStep() + ", p = " + event.getP() + " Pa, r = " + event.getR() + "m");
 		if (event.isFinished()) {
 			System.out.println("Finished");
+		} else {
+			System.out.println("Step " + event.getStep() + " r = " + event.getR() + "m,  p = " + event.getP() + " Pa,");
 		}
 	}
 
