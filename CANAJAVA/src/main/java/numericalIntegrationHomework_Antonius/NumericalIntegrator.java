@@ -12,7 +12,12 @@ public abstract class NumericalIntegrator {
 	protected Function<Pair<Double, StateVector>, StateVector> differential;
 
 	public NumericalIntegrator(double dt, double initial_t, StateVector initial_state,
-			Function<Pair<Double, StateVector>, StateVector> differential) {
+			Function<Pair<Double, StateVector>, StateVector> differential) {// Java
+																			// convention
+																			// would
+																			// be
+																			// initialT,
+																			// initialState
 		this.dt = dt;
 		this.t = initial_t;
 		this.state = initial_state;

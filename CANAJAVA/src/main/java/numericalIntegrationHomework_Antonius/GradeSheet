@@ -1,0 +1,26 @@
+I like the methods being used here, especially the Functions, Inheritances and overall workflow
+What I think could be improved on is the Java syntax for methods and primitives  
+and commenting your codes.
+The Java syntax goes as follows...camelCasing
+primitives that use 2 words to describe is 
+first word lower case 
+all other words get capital first letter, i.e.,
+
+describeMe
+iAmDescribed
+same for methods
+
+I do not know if you plan on using Java later, but for the chance that you do, 
+I would comment every method, primitive and constructor with some text
+to help you remember later on what you were thinking at the time of writing 
+that piece of code.
+
+Grading: 
+-0.05 -- for not using Java convention
++0.05 -- for going outside of the box and using methods such as Function(R,T)
+-0.025 -- Your output has not units!!
+
+I would like to see buttons on your final GUI for a choice in 
+which integration method to use.
+
+Grade 0.975/1.0

@@ -39,8 +39,10 @@ public class PressureIntegration {
 		return new PressureIntegration().new State(dP);
 	};
 
-	// this is actually not really optimal at this point, especially with the value
-	// of rho being captured from the class, but I'll wait to see how this will get
+	// this is actually not really optimal at this point, especially with the
+	// value
+	// of rho being captured from the class, but I'll wait to see how this will
+	// get
 	// integrated into the GUI before I improve this.
 	public static NumericalIntegrator makeIntegrator(double initial_radius, double initial_pressure, boolean use_RK4) {
 
@@ -60,7 +62,7 @@ public class PressureIntegration {
 	public static void main(String[] args) {
 		rho = 1.;
 
-		NumericalIntegrator integrator = makeIntegrator(100., 1, true);
+		NumericalIntegrator integrator = makeIntegrator(100., 1, false);
 
 		for (int i = 0; i < 1000; i++) {
 			integrator.step();

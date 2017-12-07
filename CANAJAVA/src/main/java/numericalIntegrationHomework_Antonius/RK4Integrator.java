@@ -18,7 +18,7 @@ public class RK4Integrator extends NumericalIntegrator {
 		StateVector k3 = this.differential.apply(Pair.of(this.t + this.dt / 2, this.state.plus(k2.times(dt / 2))));
 		StateVector k4 = this.differential.apply(Pair.of(this.t + this.dt, this.state.plus(k3.times(this.dt))));
 
-		this.state.iplus(k1.plus(k2.times(2)).plus(k3.times(2)).plus(k4).times(this.dt / 6));
+		this.state.iPlus(k1.plus(k2.times(2)).plus(k3.times(2)).plus(k4).times(this.dt / 6));
 		this.t += this.dt;
 	}
 

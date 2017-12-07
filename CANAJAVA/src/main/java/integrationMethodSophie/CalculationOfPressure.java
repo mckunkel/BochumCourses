@@ -14,7 +14,7 @@ public class CalculationOfPressure {
 
 	public static void main(String[] args) {
 
-		int n = 100;
+		int n = 1000;
 		double r = 1; // m
 		double rho = 1; // kg/m^3
 
