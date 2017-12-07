@@ -13,7 +13,7 @@ public class EulerIntegrator extends NumericalIntegrator {
 
 	public void step() {
 		StateVector delta = this.differential.apply(Pair.of(t, this.state));
-		this.state.iplus(delta.times(this.dt));
+		this.state.iPlus(delta.times(this.dt));
 		this.t += this.dt;
 	}
 }
