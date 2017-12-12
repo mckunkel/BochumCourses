@@ -19,7 +19,7 @@ public class TestApp implements IterationEventListener {
 	}
 
 	public void runAppNoThread() {
-		IntegrationWorker worker = new IntegrationWorker(1, 1, 0.5, 100, "Euler");
+		IntegrationWorker worker = new IntegrationWorker(1.41, 1, 1, 1, 0.5, 1, 6000, 1000, "Euler");
 		worker.addListener(this);
 		worker.addListener(new PrintPressure());
 		worker.iterateToR();

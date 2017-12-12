@@ -2,14 +2,19 @@ package eigthclasshomeworktimo;
 
 public class IterationEvent {
 	private double p;
+	private double L;
+	private double T;
 	private double r;
 	private int step;
 	private boolean started;
 	private boolean finished;
 	private double progress;
 
-	public IterationEvent(double p, double r, int step, boolean started, boolean finished, double progress) {
+	public IterationEvent(double p, double L, double T, double r, int step, boolean started, boolean finished,
+			double progress) {
 		this.p = p;
+		this.L = L;
+		this.T = T;
 		this.r = r;
 		this.step = step;
 		this.started = started;
@@ -19,6 +24,14 @@ public class IterationEvent {
 
 	public double getP() {
 		return p;
+	}
+
+	public double getL() {
+		return L;
+	}
+
+	public double getT() {
+		return T;
 	}
 
 	public double getR() {
