@@ -12,18 +12,41 @@ import javax.swing.JProgressBar;
 public class MainFrame extends JFrame implements IntegrationStepEventListener {
 
 	private JPanel contentPane;
+
 	private JLabel densityLabel;
 	private DoubleField densityField;
-	private JLabel pressureLabel;
-	private DoubleField pressureField;
-	private JLabel radiusLabel;
-	private DoubleField radiusField;
+
+	private JLabel opacityLabel;
+	private DoubleField opacityField;
+
+	private JLabel epsilonLabel;
+	private DoubleField epsilonField;
+
 	private JLabel finalRadiusLabel;
 	private DoubleField finalRadiusField;
+
 	private JLabel stepSizeLabel;
 	private DoubleField stepSizeField;
-	private JLabel finalPressureLabel;
-	private JLabel finalPressureResult;
+
+	private JLabel radiusLabel;
+	private DoubleField radiusField;
+	private JLabel radiusResultLabel;
+
+	private JLabel pressureLabel;
+	private DoubleField pressureField;
+	private JLabel pressureResultLabel;
+
+	private JLabel luminosityLabel;
+	private DoubleField luminosityField;
+	private JLabel luminosityResultLabel;
+
+	private JLabel temperatureLabel;
+	private DoubleField temperatureField;
+	private JLabel temperatureResultLabel;
+
+	private JLabel columnHeaderInitial;
+	private JLabel columnHeaderFinal;
+
 	private ConditionalButton runButton;
 	private JProgressBar progressBar;
 
@@ -45,33 +68,53 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 	public void initializeVariables() {
 		contentPane = (JPanel) this.getContentPane();
 
+		runButton = new ConditionalButton("Run");
+		runButton.setActionCommand("run");
+
 		densityLabel = new JLabel("density");
 		densityField = new DoubleField(5);
+		runButton.addField(densityField);
 
-		pressureLabel = new JLabel("initial pressure");
-		pressureField = new DoubleField(5);
+		opacityLabel = new JLabel("opacity");
+		opacityField = new DoubleField(5);
+		runButton.addField(opacityField);
 
-		radiusLabel = new JLabel("initial radius");
-		radiusField = new DoubleField(5);
+		epsilonLabel = new JLabel("energy generation rate");
+		epsilonField = new DoubleField(5);
+		runButton.addField(epsilonField);
 
 		finalRadiusLabel = new JLabel("final radius");
 		finalRadiusField = new DoubleField(5);
+		runButton.addField(finalRadiusField);
 
 		stepSizeLabel = new JLabel("step size");
 		stepSizeField = new DoubleField(5);
-
-		finalPressureLabel = new JLabel("final pressure");
-		finalPressureResult = new JLabel();
-
-		runButton = new ConditionalButton("Run");
-		runButton.setActionCommand("run");
-		runButton.addField(densityField);
-		runButton.addField(pressureField);
-		runButton.addField(radiusField);
-		runButton.addField(finalRadiusField);
 		runButton.addField(stepSizeField);
 
+		radiusLabel = new JLabel("initial radius");
+		radiusField = new DoubleField(5);
+		radiusResultLabel = new JLabel("--");
+		runButton.addField(radiusField);
+
+		pressureLabel = new JLabel("initial pressure");
+		pressureField = new DoubleField(5);
+		pressureResultLabel = new JLabel("--");
+		runButton.addField(pressureField);
+
+		luminosityLabel = new JLabel("initial luminosity");
+		luminosityField = new DoubleField(5);
+		luminosityResultLabel = new JLabel("--");
+		runButton.addField(luminosityField);
+
+		temperatureLabel = new JLabel("initial temperature");
+		temperatureField = new DoubleField(5);
+		temperatureResultLabel = new JLabel("--");
+		runButton.addField(temperatureField);
+
 		progressBar = new JProgressBar();
+
+		columnHeaderInitial = new JLabel("initial values");
+		columnHeaderFinal = new JLabel("final values");
 
 		// use preset values that make the simulation run long enough so you can see the
 		// progress bar
@@ -98,8 +141,9 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 				initialRadius = radiusField.getValue();
 				finalRadius = finalRadiusField.getValue();
 				stepSize = stepSizeField.getValue();
-				integrator = PressureIntegrator.makePressureIntegrator(densityField.getValue(), radiusField.getValue(),
-						finalRadiusField.getValue(), pressureField.getValue(), true);
+				integrator = StellarIntegrator.makePressureIntegrator(densityField.getValue(), radiusField.getValue(),
+						finalRadiusField.getValue(), pressureField.getValue(), epsilonField.getValue(),
+						opacityField.getValue(), luminosityField.getValue(), temperatureField.getValue(), true);
 				integrator.addListener(this);
 				integrator.addListener(new FileOutputListener());
 				simulationThread = new Thread() {
@@ -121,10 +165,14 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 		runButton.setListening(false);
 		runButton.setEnabled(true);
 		densityField.setEditable(false);
+		opacityField.setEditable(false);
+		epsilonField.setEditable(false);
 		pressureField.setEditable(false);
 		radiusField.setEditable(false);
 		stepSizeField.setEditable(false);
 		finalRadiusField.setEditable(false);
+		luminosityField.setEditable(false);
+		temperatureField.setEditable(false);
 	}
 
 	private void uiStopRunning() {
@@ -133,10 +181,14 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 		runButton.setActionCommand("run");
 		runButton.setListening(true);
 		densityField.setEditable(true);
+		opacityField.setEditable(true);
+		epsilonField.setEditable(true);
 		pressureField.setEditable(true);
 		radiusField.setEditable(true);
 		stepSizeField.setEditable(true);
 		finalRadiusField.setEditable(true);
+		luminosityField.setEditable(true);
+		temperatureField.setEditable(true);
 	}
 
 	private void stopSimulation() {
@@ -149,46 +201,84 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 	public void constructLayout() {
 		contentPane.setLayout(new GridBagLayout());
 
-		contentPane.add(densityLabel, new GridBagConstraints(0, 0, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
-				GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+		int y = 0;
 
-		contentPane.add(densityField, new GridBagConstraints(1, 0, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
-				GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-
-		contentPane.add(pressureLabel, new GridBagConstraints(0, 1, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
-				GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-
-		contentPane.add(pressureField, new GridBagConstraints(1, 1, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
-				GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-
-		contentPane.add(radiusLabel, new GridBagConstraints(0, 2, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
-				GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-
-		contentPane.add(radiusField, new GridBagConstraints(1, 2, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
-				GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-
-		contentPane.add(stepSizeLabel, new GridBagConstraints(0, 3, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
-				GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-
-		contentPane.add(stepSizeField, new GridBagConstraints(1, 3, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
-				GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-
-		contentPane.add(finalRadiusLabel, new GridBagConstraints(0, 4, 1, 1, 0., 0.,
+		contentPane.add(columnHeaderInitial, new GridBagConstraints(1, y, 1, 1, 0.0, 0.0,
 				GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
 
-		contentPane.add(finalRadiusField, new GridBagConstraints(1, 4, 1, 1, 0., 0.,
+		contentPane.add(columnHeaderFinal, new GridBagConstraints(2, y++, 1, 1, 0.0, 0.0,
 				GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
 
-		contentPane.add(finalPressureLabel, new GridBagConstraints(0, 5, 1, 1, 0., 0.,
+		contentPane.add(densityLabel, new GridBagConstraints(0, y, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
+				GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+
+		contentPane.add(densityField, new GridBagConstraints(1, y++, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
+				GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+
+		contentPane.add(opacityLabel, new GridBagConstraints(0, y, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
+				GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+
+		contentPane.add(opacityField, new GridBagConstraints(1, y++, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
+				GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+
+		contentPane.add(epsilonLabel, new GridBagConstraints(0, y, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
+				GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+
+		contentPane.add(epsilonField, new GridBagConstraints(1, y++, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
+				GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+
+		contentPane.add(finalRadiusLabel, new GridBagConstraints(0, y, 1, 1, 0., 0.,
 				GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
 
-		contentPane.add(finalPressureResult, new GridBagConstraints(1, 5, 1, 1, 0., 0.,
+		contentPane.add(finalRadiusField, new GridBagConstraints(1, y++, 1, 1, 0., 0.,
 				GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
 
-		contentPane.add(runButton, new GridBagConstraints(0, 6, 2, 1, 0., 0., GridBagConstraints.CENTER,
+		contentPane.add(stepSizeLabel, new GridBagConstraints(0, y, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
+				GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+
+		contentPane.add(stepSizeField, new GridBagConstraints(1, y++, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
+				GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+
+		contentPane.add(radiusLabel, new GridBagConstraints(0, y, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
+				GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+
+		contentPane.add(radiusField, new GridBagConstraints(1, y, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
+				GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+
+		contentPane.add(radiusResultLabel, new GridBagConstraints(2, y++, 1, 1, 1.0, 0.0,
+				GridBagConstraints.BASELINE_LEADING, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
+
+		contentPane.add(pressureLabel, new GridBagConstraints(0, y, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
+				GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+
+		contentPane.add(pressureField, new GridBagConstraints(1, y, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
+				GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+
+		contentPane.add(pressureResultLabel, new GridBagConstraints(2, y++, 1, 1, 1.0, 0.0,
+				GridBagConstraints.BASELINE_LEADING, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
+
+		contentPane.add(luminosityLabel, new GridBagConstraints(0, y, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
+				GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+
+		contentPane.add(luminosityField, new GridBagConstraints(1, y, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
+				GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+
+		contentPane.add(luminosityResultLabel, new GridBagConstraints(2, y++, 1, 1, 1.0, 0.0,
+				GridBagConstraints.BASELINE_LEADING, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
+
+		contentPane.add(temperatureLabel, new GridBagConstraints(0, y, 1, 1, 0., 0.,
+				GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+
+		contentPane.add(temperatureField, new GridBagConstraints(1, y, 1, 1, 0., 0.,
+				GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+
+		contentPane.add(temperatureResultLabel, new GridBagConstraints(2, y++, 1, 1, 1.0, 0.0,
+				GridBagConstraints.BASELINE_LEADING, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
+
+		contentPane.add(runButton, new GridBagConstraints(0, y++, 2, 1, 0., 0., GridBagConstraints.CENTER,
 				GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
 
-		contentPane.add(progressBar, new GridBagConstraints(0, 7, 2, 1, 0., 0., GridBagConstraints.CENTER,
+		contentPane.add(progressBar, new GridBagConstraints(0, y++, 2, 1, 0., 0., GridBagConstraints.CENTER,
 				GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
 	}
 
@@ -202,11 +292,17 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 
 	@Override
 	public void nextIntegrationStep(IntegrationStepEvent event) {
+		radiusResultLabel.setText(String.format("%.4f", event.integrationState.t));
+		pressureResultLabel
+				.setText(String.format("%.4f", event.integrationState.stateVector.state[StellarIntegrator.p]));
+		luminosityResultLabel
+				.setText(String.format("%.4f", event.integrationState.stateVector.state[StellarIntegrator.L]));
+		temperatureResultLabel
+				.setText(String.format("%.4f", event.integrationState.stateVector.state[StellarIntegrator.T]));
+
 		if (event.finished == true) {
 			uiStopRunning();
-			finalPressureResult.setText(String.format("%.4f", event.integrationState.stateVector.state[0]));
 		} else {
-			finalPressureResult.setText(String.format("%.4f", event.integrationState.stateVector.state[0]));
 			int progress = (int) Math.round(Math.abs(event.integrationState.t / (initialRadius - finalRadius) * 100));
 			if (stepSize < 0) {
 				progress = 100 - progress;
