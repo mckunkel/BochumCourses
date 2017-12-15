@@ -14,7 +14,7 @@ public class Constants {
 	public static final int APP_WINDOW_SIZE_WIDTH = (int) screenSize.getWidth() - (int) screenSize.getWidth() / 3;
 	public static final int APP_WINDOW_SIZE_HEIGHT = (int) screenSize.getHeight() - (int) screenSize.getHeight() / 3;
 
-	public static final String APPNAME = "A Staring GUI";
+	public static final String APPNAME = "A Starting GUI";
 	public static final String STATUSBAR_TXT = "Ready";
 	public static final String RUN_TXT = "Click here to start the process";
 	public static final String RUNBUTTON_TXT = "Run";

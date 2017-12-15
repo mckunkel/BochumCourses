@@ -50,6 +50,7 @@ public class OddNumberMultiplication {
 		for (IterationEventListener iterationEventListener : this.myListeners) {
 			IterationEventListener iListener = (IterationEventListener) iterationEventListener;
 			iListener.nextIteration(event);
+
 		}
 	}
 

@@ -1,0 +1,18 @@
+I like the overall workflow
+What I think could be improved on is commenting your codes.
+
+I do not know if you plan on using Java later, but for the chance that you do, 
+I would comment every method, primitive and constructor with some text
+to help you remember later on what you were thinking at the time of writing 
+that piece of code. But you're a python coder, so you "should" know this
+
+I didnt see the second part of your homework, which was to construct a simple GUI. 
+I am grading this ~1 school day (3 total days if weekends count). 
+I looked at the merge request and also did not see a push for a GUI there. 
+Therefore I have to conclude that the GUI part of the homework was forgotten.
+
+Grading: 
+
+-0.5 for the missing GUI
+
+Grade 0.5/1.0
