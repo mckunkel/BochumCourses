@@ -15,7 +15,7 @@ public class CalculationOfPressure {
 	public static void main(String[] args) {
 
 		int n = 1000;
-		double r = 1; // m
+		double r = 100; // m
 		double rho = 1; // kg/m^3
 
 		System.out.println("Pressure inside a sphere with a radius of " + r + "m and a density of " + rho
