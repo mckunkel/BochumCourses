@@ -8,39 +8,22 @@ public class StateVector {
 		this.state = state;
 	}
 
-	public StateVector copy() {
-		double[] newArray = new double[this.state.length];
-		// You know you can always try this and save yourself a forloop
-		System.arraycopy(this.state, 0, newArray, 0, this.state.length);
-		// for (int i = 0; i < this.state.length; i++) {
-		// newArray[i] = this.state[i];
-		// }
-		return new StateVector(newArray);
-	}
-
-	public StateVector iTimes(double factor) {// lets use Java convention of
-												// iTimes
+	public StateVector plus(StateVector other) {
+		assert this.state.length == other.state.length;
+		double[] new_state = new double[this.state.length];
 		for (int i = 0; i < this.state.length; i++) {
-			this.state[i] *= factor;
+			new_state[i] = this.state[i] + other.state[i];
 		}
 
-		return this;
-	}
-
-	public StateVector iPlus(StateVector b) {// lets use Java convention of
-		// iPlus
-		for (int i = 0; i < this.state.length; i++) {
-			this.state[i] += b.state[i];
-		}
-
-		return this;
+		return new StateVector(new_state);
 	}
 
 	public StateVector times(double factor) {
-		return this.copy().iTimes(factor);
-	}
+		double[] new_state = new double[this.state.length];
+		for (int i = 0; i < this.state.length; i++) {
+			new_state[i] = factor * this.state[i];
+		}
 
-	public StateVector plus(StateVector b) {
-		return this.copy().iPlus(b);
+		return new StateVector(new_state);
 	}
 }
