@@ -30,6 +30,6 @@ public class ExecutorServiceExample {
 		for (int i = 0; i < 5; i++) {
 			executorService.submit(new ExecuteWorker());
 		}
-
+		executorService.shutdown();
 	}
 }

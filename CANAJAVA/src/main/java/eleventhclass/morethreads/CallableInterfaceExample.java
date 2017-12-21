@@ -26,11 +26,11 @@ class Processor implements Callable<String> {
 
 public class CallableInterfaceExample {
 	public static void main(String[] args) {
-		ExecutorService executorService = Executors.newFixedThreadPool(2);
+		ExecutorService executorService = Executors.newFixedThreadPool(4);
 
 		List<Future<String>> aList = new ArrayList<>();
 
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < 19; i++) {
 			Future<String> future = executorService.submit(new Processor(i + 1));
 			aList.add(future);
 		}
