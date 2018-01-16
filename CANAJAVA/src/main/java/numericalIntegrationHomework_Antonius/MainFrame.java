@@ -4,6 +4,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -49,6 +50,10 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 
 	private ConditionalButton runButton;
 	private JProgressBar progressBar;
+
+	private JLabel integrationMethodLabel;
+	private JComboBox<String> integrationMethodBox;
+	private static final String[] integrationMethods = { "Euler", "RK4" };
 
 	private boolean running;
 	private NumericalIntegrator integrator;
@@ -111,6 +116,9 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 		temperatureResultLabel = new JLabel("--");
 		runButton.addField(temperatureField);
 
+		integrationMethodLabel = new JLabel("Integration method");
+		integrationMethodBox = new JComboBox<>(integrationMethods);
+
 		progressBar = new JProgressBar();
 
 		columnHeaderInitial = new JLabel("initial values");
@@ -141,9 +149,10 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 				initialRadius = radiusField.getValue();
 				finalRadius = finalRadiusField.getValue();
 				stepSize = stepSizeField.getValue();
+				boolean use_rk4 = (integrationMethodBox.getSelectedItem() == "RK4");
 				integrator = StellarIntegrator.makePressureIntegrator(densityField.getValue(), radiusField.getValue(),
 						finalRadiusField.getValue(), pressureField.getValue(), epsilonField.getValue(),
-						opacityField.getValue(), luminosityField.getValue(), temperatureField.getValue(), true);
+						opacityField.getValue(), luminosityField.getValue(), temperatureField.getValue(), use_rk4);
 				integrator.addListener(this);
 				integrator.addListener(new FileOutputListener());
 				simulationThread = new Thread() {
@@ -274,6 +283,12 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 
 		contentPane.add(temperatureResultLabel, new GridBagConstraints(2, y++, 1, 1, 1.0, 0.0,
 				GridBagConstraints.BASELINE_LEADING, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
+
+		contentPane.add(integrationMethodLabel, new GridBagConstraints(0, y, 1, 1, 0., 0.,
+				GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+
+		contentPane.add(integrationMethodBox, new GridBagConstraints(1, y++, 1, 1, 1.0, 0.0,
+				GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
 
 		contentPane.add(runButton, new GridBagConstraints(0, y++, 2, 1, 0., 0., GridBagConstraints.CENTER,
 				GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
