@@ -1,4 +1,4 @@
-package numericalIntegrationHomework_Antonius;
+package statStarAntonius;
 
 public interface IntegrationStepEventListener {
 	public void nextIntegrationStep(IntegrationStepEvent event);

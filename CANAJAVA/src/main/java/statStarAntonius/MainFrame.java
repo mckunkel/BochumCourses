@@ -1,4 +1,4 @@
-package numericalIntegrationHomework_Antonius;
+package statStarAntonius;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;

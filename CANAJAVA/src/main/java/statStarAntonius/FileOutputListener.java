@@ -1,4 +1,4 @@
-package numericalIntegrationHomework_Antonius;
+package statStarAntonius;
 
 import java.io.FileWriter;
 import java.io.IOException;

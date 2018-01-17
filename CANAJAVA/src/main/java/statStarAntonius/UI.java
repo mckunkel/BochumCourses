@@ -1,4 +1,4 @@
-package numericalIntegrationHomework_Antonius;
+package statStarAntonius;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;

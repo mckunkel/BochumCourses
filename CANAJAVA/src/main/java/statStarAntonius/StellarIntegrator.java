@@ -1,4 +1,4 @@
-package numericalIntegrationHomework_Antonius;
+package statStarAntonius;
 
 import java.util.function.Function;
 
