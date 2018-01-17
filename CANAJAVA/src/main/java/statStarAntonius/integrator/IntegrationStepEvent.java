@@ -1,4 +1,4 @@
-package statStarAntonius;
+package statStarAntonius.integrator;
 
 public class IntegrationStepEvent {
 	public IntegrationState integrationState;

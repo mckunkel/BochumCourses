@@ -1,4 +1,4 @@
-package statStarAntonius;
+package statStarAntonius.ui;
 
 import java.awt.Color;
 

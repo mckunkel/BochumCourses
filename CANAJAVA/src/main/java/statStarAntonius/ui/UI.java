@@ -1,4 +1,4 @@
-package statStarAntonius;
+package statStarAntonius.ui;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;

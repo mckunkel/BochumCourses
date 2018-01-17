@@ -3,6 +3,11 @@ package statStarAntonius;
 import java.util.function.Function;
 
 import domain.utils.Constants;
+import statStarAntonius.integrator.EulerIntegrator;
+import statStarAntonius.integrator.IntegrationState;
+import statStarAntonius.integrator.NumericalIntegrator;
+import statStarAntonius.integrator.RK4Integrator;
+import statStarAntonius.integrator.StateVector;
 
 public class StellarIntegrator {
 

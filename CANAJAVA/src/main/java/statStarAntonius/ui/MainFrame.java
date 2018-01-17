@@ -1,4 +1,4 @@
-package statStarAntonius;
+package statStarAntonius.ui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -9,6 +9,12 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+
+import statStarAntonius.StellarIntegrator;
+import statStarAntonius.integrator.FileOutputListener;
+import statStarAntonius.integrator.IntegrationStepEvent;
+import statStarAntonius.integrator.IntegrationStepEventListener;
+import statStarAntonius.integrator.NumericalIntegrator;
 
 public class MainFrame extends JFrame implements IntegrationStepEventListener {
 

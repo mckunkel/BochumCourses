@@ -1,4 +1,4 @@
-package statStarAntonius;
+package statStarAntonius.integrator;
 
 import java.io.FileWriter;
 import java.io.IOException;
