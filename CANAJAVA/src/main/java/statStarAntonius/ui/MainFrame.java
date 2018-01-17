@@ -10,7 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
-import statStarAntonius.StellarIntegrator;
+import statStarAntonius.StatStar;
 import statStarAntonius.integrator.FileOutputListener;
 import statStarAntonius.integrator.IntegrationStepEvent;
 import statStarAntonius.integrator.IntegrationStepEventListener;
@@ -156,7 +156,7 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 				finalRadius = finalRadiusField.getValue();
 				stepSize = stepSizeField.getValue();
 				boolean use_rk4 = (integrationMethodBox.getSelectedItem() == "RK4");
-				integrator = StellarIntegrator.makePressureIntegrator(densityField.getValue(), radiusField.getValue(),
+				integrator = StatStar.makePressureIntegrator(densityField.getValue(), radiusField.getValue(),
 						finalRadiusField.getValue(), pressureField.getValue(), epsilonField.getValue(),
 						opacityField.getValue(), luminosityField.getValue(), temperatureField.getValue(), use_rk4);
 				integrator.addListener(this);
@@ -315,11 +315,11 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 	public void nextIntegrationStep(IntegrationStepEvent event) {
 		radiusResultLabel.setText(String.format("%.4f", event.integrationState.t));
 		pressureResultLabel
-				.setText(String.format("%.4f", event.integrationState.stateVector.state[StellarIntegrator.p]));
+				.setText(String.format("%.4f", event.integrationState.stateVector.state[StatStar.p]));
 		luminosityResultLabel
-				.setText(String.format("%.4f", event.integrationState.stateVector.state[StellarIntegrator.L]));
+				.setText(String.format("%.4f", event.integrationState.stateVector.state[StatStar.L]));
 		temperatureResultLabel
-				.setText(String.format("%.4f", event.integrationState.stateVector.state[StellarIntegrator.T]));
+				.setText(String.format("%.4f", event.integrationState.stateVector.state[StatStar.T]));
 
 		if (event.finished == true) {
 			uiStopRunning();

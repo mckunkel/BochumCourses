@@ -2,30 +2,52 @@ package statStarAntonius;
 
 import java.util.function.Function;
 
-import domain.utils.Constants;
 import statStarAntonius.integrator.EulerIntegrator;
 import statStarAntonius.integrator.IntegrationState;
+import statStarAntonius.integrator.IntegrationStepEvent;
+import statStarAntonius.integrator.IntegrationStepEventListener;
 import statStarAntonius.integrator.NumericalIntegrator;
 import statStarAntonius.integrator.RK4Integrator;
 import statStarAntonius.integrator.StateVector;
 
-public class StellarIntegrator {
+public class StatStar implements IntegrationStepEventListener {
 
 	public static final int p = 0;
 	public static final int L = 1;
 	public static final int T = 2;
+	public static final int M = 3;
+
+	double mu;
+	double X;
+	double Y;
+	double Z;
+	double XCNO;
+
+	private double prevP; // these store the value of p and T at the previous simulation step
+	private double prevT; //
+
+	boolean irc;
+	double tOverGbf;
+	double kPad;
+
+	public StatStarState extendedState;
 
 	public static final double sigma = 5.67e-8;
 
-	public static Function<IntegrationState, StateVector> makeDifferential(double rho, double epsilon, double kappa) {
+	public Function<IntegrationState, StateVector> makeDifferential() {
 		Function<IntegrationState, StateVector> differential = state -> {
+			StatStarState extendedState = this.extendedState;
 			double r = state.t;
-			double L = state.stateVector.state[StellarIntegrator.L];
-			double T = state.stateVector.state[StellarIntegrator.T];
-			double dP = -4. / 3. * Math.PI * Constants.gravitationalConstant * (rho * rho) * r;
-			double dL = epsilon * rho * 4 * Math.PI * (r * r);
-			double dT = -3 / (16 * Math.PI * 4 * sigma * (r * r)) * kappa * rho / Math.pow(T, 3) * L;
-			return new StateVector(new double[] { dP, dL, dT });
+			double L = state.stateVector.state[StatStar.L];
+			double T = state.stateVector.state[StatStar.T];
+			double M = state.stateVector.state[StatStar.M];
+
+			double dP = -Const.gravitationalConstant * extendedState.rho * M / (r * r);
+			double dL = extendedState.epsilon * extendedState.rho * 4 * Math.PI * (r * r);
+			double dT = -3 / (16 * Math.PI * Const.a * (r * r)) * extendedState.kappa * extendedState.rho
+					/ Math.pow(T, 3) * L; // TODO: irc check
+			double dM = extendedState.rho * 4 * Math.PI * (r * r);
+			return new StateVector(new double[] { dP, dL, dT, dM });
 		};
 		return differential;
 	}
@@ -61,6 +83,24 @@ public class StellarIntegrator {
 		// System.out.println(integrator.integrator.getStateVector().state[0]);
 		// System.out.println(integrator.integrator.getT());
 		// }
+
+	}
+
+	@Override
+	public void nextIntegrationStep(IntegrationStepEvent event) {
+		// this is basically an integration step hook that will perform the other
+		// necessary tasks for each integration step, such as checking boundary
+		// conditions and updating irc
+
+		double p = event.integrationState.stateVector.state[StatStar.p];
+		double T = event.integrationState.stateVector.state[StatStar.T];
+
+		double dlPdlT = Math.log(p / this.prevP) / Math.log(T / this.prevT);
+		if (dlPdlT < Const.gamrat) {
+			irc = 1;
+		} else {
+			irc = 0;
+		}
 
 	}
 
