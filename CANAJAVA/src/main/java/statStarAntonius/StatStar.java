@@ -36,17 +36,26 @@ public class StatStar implements IntegrationStepEventListener {
 
 	public Function<IntegrationState, StateVector> makeDifferential() {
 		Function<IntegrationState, StateVector> differential = state -> {
-			EquationOfState extendedState = this.extendedState;
+			StatStar statStar = this; // capture the statStar instance locally so we can access the updated irc that is computed each simulation step
+
 			double r = state.t;
+			double p = state.stateVector.state[StatStar.p];
 			double L = state.stateVector.state[StatStar.L];
 			double T = state.stateVector.state[StatStar.T];
 			double M = state.stateVector.state[StatStar.M];
+			EquationOfState eos = new EquationOfState(T, p, statStar);
 
-			double dP = -Const.gravitationalConstant * extendedState.rho * M / (r * r);
-			double dL = extendedState.epsilon * extendedState.rho * 4 * Math.PI * (r * r);
-			double dT = -3 / (16 * Math.PI * Const.a * (r * r)) * extendedState.kappa * extendedState.rho
-					/ Math.pow(T, 3) * L; // TODO: irc check
-			double dM = extendedState.rho * 4 * Math.PI * (r * r);
+			double dP = -Const.gravitationalConstant * eos.rho * M / (r * r);
+			double dL = eos.epsilon * eos.rho * 4 * Math.PI * (r * r);
+			double dT;
+			if (!irc) {
+				dT = -3 / (16 * Math.PI * Const.a * (r * r)) * eos.kappa * eos.rho
+						/ Math.pow(T, 3) * L;
+			}
+			else {
+				dT = -1 / Const.gamrat * Const.G * M / (r*r) * mu * Const.mH / Const.kB;
+			}
+			double dM = eos.rho * 4 * Math.PI * (r * r);
 			return new StateVector(new double[] { dP, dL, dT, dM });
 		};
 		return differential;
@@ -97,9 +106,9 @@ public class StatStar implements IntegrationStepEventListener {
 
 		double dlPdlT = Math.log(p / this.prevP) / Math.log(T / this.prevT);
 		if (dlPdlT < Const.gamrat) {
-			irc = 1;
+			irc = true;
 		} else {
-			irc = 0;
+			irc = false;
 		}
 
 	}
