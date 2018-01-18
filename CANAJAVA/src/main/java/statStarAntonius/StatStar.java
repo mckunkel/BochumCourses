@@ -30,13 +30,13 @@ public class StatStar implements IntegrationStepEventListener {
 	double tOverGbf;
 	double kPad;
 
-	public StatStarState extendedState;
+	public EquationOfState extendedState;
 
 	public static final double sigma = 5.67e-8;
 
 	public Function<IntegrationState, StateVector> makeDifferential() {
 		Function<IntegrationState, StateVector> differential = state -> {
-			StatStarState extendedState = this.extendedState;
+			EquationOfState extendedState = this.extendedState;
 			double r = state.t;
 			double L = state.stateVector.state[StatStar.L];
 			double T = state.stateVector.state[StatStar.T];
