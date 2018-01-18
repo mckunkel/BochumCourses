@@ -36,7 +36,7 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 	private DoubleField stepSizeField;
 
 	private JLabel radiusLabel;
-	private DoubleField radiusField;
+	private StellarRadiusField radiusField;
 	private JLabel radiusResultLabel;
 
 	private JLabel pressureLabel;
@@ -102,11 +102,6 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 		stepSizeField = new DoubleField(5);
 		runButton.addField(stepSizeField);
 
-		radiusLabel = new JLabel("initial radius");
-		radiusField = new DoubleField(5);
-		radiusResultLabel = new JLabel("--");
-		runButton.addField(radiusField);
-
 		pressureLabel = new JLabel("initial pressure");
 		pressureField = new DoubleField(5);
 		pressureResultLabel = new JLabel("--");
@@ -122,6 +117,10 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 		temperatureResultLabel = new JLabel("--");
 		runButton.addField(temperatureField);
 
+		radiusLabel = new JLabel("initial radius");
+		radiusField = new StellarRadiusField(temperatureField, luminosityField);
+		radiusResultLabel = new JLabel("--");
+
 		integrationMethodLabel = new JLabel("Integration method");
 		integrationMethodBox = new JComboBox<>(integrationMethods);
 
@@ -134,7 +133,6 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 		// progress bar
 		densityField.setText("1");
 		pressureField.setText("1");
-		radiusField.setText("100000");
 		stepSizeField.setText("-0.00001");
 		finalRadiusField.setText("1");
 	}
@@ -152,11 +150,11 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 	private void startSimulation() {
 		if (running == false) {
 			try {
-				initialRadius = radiusField.getValue();
+				initialRadius = radiusField.getRadius();
 				finalRadius = finalRadiusField.getValue();
 				stepSize = stepSizeField.getValue();
 				boolean use_rk4 = (integrationMethodBox.getSelectedItem() == "RK4");
-				integrator = StatStar.makePressureIntegrator(densityField.getValue(), radiusField.getValue(),
+				integrator = StatStar.makePressureIntegrator(densityField.getValue(), radiusField.getRadius(),
 						finalRadiusField.getValue(), pressureField.getValue(), epsilonField.getValue(),
 						opacityField.getValue(), luminosityField.getValue(), temperatureField.getValue(), use_rk4);
 				integrator.addListener(this);
@@ -183,7 +181,6 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 		opacityField.setEditable(false);
 		epsilonField.setEditable(false);
 		pressureField.setEditable(false);
-		radiusField.setEditable(false);
 		stepSizeField.setEditable(false);
 		finalRadiusField.setEditable(false);
 		luminosityField.setEditable(false);
@@ -199,7 +196,6 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 		opacityField.setEditable(true);
 		epsilonField.setEditable(true);
 		pressureField.setEditable(true);
-		radiusField.setEditable(true);
 		stepSizeField.setEditable(true);
 		finalRadiusField.setEditable(true);
 		luminosityField.setEditable(true);
@@ -314,12 +310,9 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 	@Override
 	public void nextIntegrationStep(IntegrationStepEvent event) {
 		radiusResultLabel.setText(String.format("%.4f", event.integrationState.t));
-		pressureResultLabel
-				.setText(String.format("%.4f", event.integrationState.stateVector.state[StatStar.p]));
-		luminosityResultLabel
-				.setText(String.format("%.4f", event.integrationState.stateVector.state[StatStar.L]));
-		temperatureResultLabel
-				.setText(String.format("%.4f", event.integrationState.stateVector.state[StatStar.T]));
+		pressureResultLabel.setText(String.format("%.4f", event.integrationState.stateVector.state[StatStar.p]));
+		luminosityResultLabel.setText(String.format("%.4f", event.integrationState.stateVector.state[StatStar.L]));
+		temperatureResultLabel.setText(String.format("%.4f", event.integrationState.stateVector.state[StatStar.T]));
 
 		if (event.finished == true) {
 			uiStopRunning();
