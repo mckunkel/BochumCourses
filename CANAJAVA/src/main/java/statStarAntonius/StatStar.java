@@ -45,7 +45,7 @@ public class StatStar implements IntegrationStepEventListener {
 			double M = state.stateVector.state[StatStar.M];
 			EquationOfState eos = new EquationOfState(T, p, statStar);
 
-			double dP = -Const.gravitationalConstant * eos.rho * M / (r * r);
+			double dP = -Const.G * eos.rho * M / (r * r);
 			double dL = eos.epsilon * eos.rho * 4 * Math.PI * (r * r);
 			double dT;
 			if (!irc) {
