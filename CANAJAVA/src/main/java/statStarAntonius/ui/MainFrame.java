@@ -14,20 +14,19 @@ import statStarAntonius.StatStar;
 import statStarAntonius.integrator.FileOutputListener;
 import statStarAntonius.integrator.IntegrationStepEvent;
 import statStarAntonius.integrator.IntegrationStepEventListener;
-import statStarAntonius.integrator.NumericalIntegrator;
 
 public class MainFrame extends JFrame implements IntegrationStepEventListener {
 
 	private JPanel contentPane;
 
-	private JLabel densityLabel;
-	private DoubleField densityField;
+	private JLabel xLabel;
+	private DoubleField xField;
 
-	private JLabel opacityLabel;
-	private DoubleField opacityField;
+	private JLabel yLabel;
+	private YFractionField yField;
 
-	private JLabel epsilonLabel;
-	private DoubleField epsilonField;
+	private JLabel zLabel;
+	private DoubleField zField;
 
 	private JLabel finalRadiusLabel;
 	private DoubleField finalRadiusField;
@@ -39,9 +38,9 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 	private StellarRadiusField radiusField;
 	private JLabel radiusResultLabel;
 
-	private JLabel pressureLabel;
-	private DoubleField pressureField;
-	private JLabel pressureResultLabel;
+	private JLabel massLabel;
+	private DoubleField massField;
+	private JLabel massResultLabel;
 
 	private JLabel luminosityLabel;
 	private DoubleField luminosityField;
@@ -62,7 +61,7 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 	private static final String[] integrationMethods = { "Euler", "RK4" };
 
 	private boolean running;
-	private NumericalIntegrator integrator;
+	private StatStar statStar;
 	private Thread simulationThread;
 	private double initialRadius;
 	private double finalRadius;
@@ -82,17 +81,19 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 		runButton = new ConditionalButton("Run");
 		runButton.setActionCommand("run");
 
-		densityLabel = new JLabel("density");
-		densityField = new DoubleField(5);
-		runButton.addField(densityField);
+		xLabel = new JLabel("X");
+		xField = new DoubleField(5);
+		xField.setValidFunc(x -> (x >= 0 && x <= 1));
+		runButton.addField(xField);
 
-		opacityLabel = new JLabel("opacity");
-		opacityField = new DoubleField(5);
-		runButton.addField(opacityField);
+		zLabel = new JLabel("Z");
+		zField = new DoubleField(5);
+		zField.setValidFunc(x -> (x >= 0 && x <= 1));
+		runButton.addField(zField);
 
-		epsilonLabel = new JLabel("energy generation rate");
-		epsilonField = new DoubleField(5);
-		runButton.addField(epsilonField);
+		yLabel = new JLabel("Y");
+		yField = new YFractionField(xField, zField);
+		runButton.addField(yField);
 
 		finalRadiusLabel = new JLabel("final radius");
 		finalRadiusField = new DoubleField(5);
@@ -102,22 +103,25 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 		stepSizeField = new DoubleField(5);
 		runButton.addField(stepSizeField);
 
-		pressureLabel = new JLabel("initial pressure");
-		pressureField = new DoubleField(5);
-		pressureResultLabel = new JLabel("--");
-		runButton.addField(pressureField);
+		massLabel = new JLabel("enclosed mass");
+		massField = new DoubleField(5);
+		massResultLabel = new JLabel("--");
+		massField.setValidFunc(x -> (x > 0));
+		runButton.addField(massField);
 
-		luminosityLabel = new JLabel("initial luminosity");
+		luminosityLabel = new JLabel("surface luminosity");
 		luminosityField = new DoubleField(5);
+		luminosityField.setValidFunc(x -> (x > 0));
 		luminosityResultLabel = new JLabel("--");
 		runButton.addField(luminosityField);
 
-		temperatureLabel = new JLabel("initial temperature");
+		temperatureLabel = new JLabel("surface temperature");
 		temperatureField = new DoubleField(5);
+		temperatureField.setValidFunc(x -> (x > 0));
 		temperatureResultLabel = new JLabel("--");
 		runButton.addField(temperatureField);
 
-		radiusLabel = new JLabel("initial radius");
+		radiusLabel = new JLabel("radius");
 		radiusField = new StellarRadiusField(temperatureField, luminosityField);
 		radiusResultLabel = new JLabel("--");
 
@@ -131,8 +135,8 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 
 		// use preset values that make the simulation run long enough so you can see the
 		// progress bar
-		densityField.setText("1");
-		pressureField.setText("1");
+		xField.setText("1");
+		massField.setText("1");
 		stepSizeField.setText("-0.00001");
 		finalRadiusField.setText("1");
 	}
@@ -153,15 +157,14 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 				initialRadius = radiusField.getRadius();
 				finalRadius = finalRadiusField.getValue();
 				stepSize = stepSizeField.getValue();
-				boolean use_rk4 = (integrationMethodBox.getSelectedItem() == "RK4");
-				integrator = StatStar.makePressureIntegrator(densityField.getValue(), radiusField.getRadius(),
-						finalRadiusField.getValue(), pressureField.getValue(), epsilonField.getValue(),
-						opacityField.getValue(), luminosityField.getValue(), temperatureField.getValue(), use_rk4);
-				integrator.addListener(this);
-				integrator.addListener(new FileOutputListener());
+				boolean useRK4 = (integrationMethodBox.getSelectedItem() == "RK4");
+				statStar = new StatStar(luminosityField.getValue(), massField.getValue(), radiusField.getRadius(),
+						useRK4, xField.getValue(), yField.getyFraction(), zField.getValue());
+				statStar.integrator.addListener(this);
+				statStar.integrator.addListener(new FileOutputListener());
 				simulationThread = new Thread() {
 					public void run() {
-						integrator.run();
+						statStar.integrator.run();
 					}
 				};
 				simulationThread.start();
@@ -177,10 +180,9 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 		runButton.setActionCommand("stop");
 		runButton.setListening(false);
 		runButton.setEnabled(true);
-		densityField.setEditable(false);
-		opacityField.setEditable(false);
-		epsilonField.setEditable(false);
-		pressureField.setEditable(false);
+		xField.setEditable(false);
+		zField.setEditable(false);
+		massField.setEditable(false);
 		stepSizeField.setEditable(false);
 		finalRadiusField.setEditable(false);
 		luminosityField.setEditable(false);
@@ -192,10 +194,9 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 		runButton.setText("Run");
 		runButton.setActionCommand("run");
 		runButton.setListening(true);
-		densityField.setEditable(true);
-		opacityField.setEditable(true);
-		epsilonField.setEditable(true);
-		pressureField.setEditable(true);
+		xField.setEditable(true);
+		zField.setEditable(true);
+		massField.setEditable(true);
 		stepSizeField.setEditable(true);
 		finalRadiusField.setEditable(true);
 		luminosityField.setEditable(true);
@@ -204,7 +205,7 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 
 	private void stopSimulation() {
 		if (running == true) {
-			integrator.stop();
+			statStar.integrator.stop();
 			uiStopRunning();
 		}
 	}
@@ -220,22 +221,22 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 		contentPane.add(columnHeaderFinal, new GridBagConstraints(2, y++, 1, 1, 0.0, 0.0,
 				GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
 
-		contentPane.add(densityLabel, new GridBagConstraints(0, y, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
+		contentPane.add(xLabel, new GridBagConstraints(0, y, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
 				GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
 
-		contentPane.add(densityField, new GridBagConstraints(1, y++, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
+		contentPane.add(xField, new GridBagConstraints(1, y++, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
 				GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
 
-		contentPane.add(opacityLabel, new GridBagConstraints(0, y, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
+		contentPane.add(yLabel, new GridBagConstraints(0, y, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
 				GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
 
-		contentPane.add(opacityField, new GridBagConstraints(1, y++, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
+		contentPane.add(yField, new GridBagConstraints(1, y++, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
 				GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
 
-		contentPane.add(epsilonLabel, new GridBagConstraints(0, y, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
+		contentPane.add(zLabel, new GridBagConstraints(0, y, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
 				GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
 
-		contentPane.add(epsilonField, new GridBagConstraints(1, y++, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
+		contentPane.add(zField, new GridBagConstraints(1, y++, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
 				GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
 
 		contentPane.add(finalRadiusLabel, new GridBagConstraints(0, y, 1, 1, 0., 0.,
@@ -259,13 +260,13 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 		contentPane.add(radiusResultLabel, new GridBagConstraints(2, y++, 1, 1, 1.0, 0.0,
 				GridBagConstraints.BASELINE_LEADING, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
 
-		contentPane.add(pressureLabel, new GridBagConstraints(0, y, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
+		contentPane.add(massLabel, new GridBagConstraints(0, y, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
 				GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
 
-		contentPane.add(pressureField, new GridBagConstraints(1, y, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
+		contentPane.add(massField, new GridBagConstraints(1, y, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
 				GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
 
-		contentPane.add(pressureResultLabel, new GridBagConstraints(2, y++, 1, 1, 1.0, 0.0,
+		contentPane.add(massResultLabel, new GridBagConstraints(2, y++, 1, 1, 1.0, 0.0,
 				GridBagConstraints.BASELINE_LEADING, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
 
 		contentPane.add(luminosityLabel, new GridBagConstraints(0, y, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
@@ -310,7 +311,7 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 	@Override
 	public void nextIntegrationStep(IntegrationStepEvent event) {
 		radiusResultLabel.setText(String.format("%.4f", event.integrationState.t));
-		pressureResultLabel.setText(String.format("%.4f", event.integrationState.stateVector.state[StatStar.p]));
+		massResultLabel.setText(String.format("%.4f", event.integrationState.stateVector.state[StatStar.p]));
 		luminosityResultLabel.setText(String.format("%.4f", event.integrationState.stateVector.state[StatStar.L]));
 		temperatureResultLabel.setText(String.format("%.4f", event.integrationState.stateVector.state[StatStar.T]));
 

@@ -32,11 +32,14 @@ public class StatStar implements IntegrationStepEventListener {
 
 	public EquationOfState extendedState;
 
+	public NumericalIntegrator integrator;
+
 	public static final double sigma = 5.67e-8;
 
 	public Function<IntegrationState, StateVector> makeDifferential() {
 		Function<IntegrationState, StateVector> differential = state -> {
-			StatStar statStar = this; // capture the statStar instance locally so we can access the updated irc that is computed each simulation step
+			StatStar statStar = this; // capture the statStar instance locally so we can access the updated irc that
+										// is computed each simulation step
 
 			double r = state.t;
 			double p = state.stateVector.state[StatStar.p];
@@ -49,11 +52,9 @@ public class StatStar implements IntegrationStepEventListener {
 			double dL = eos.epsilon * eos.rho * 4 * Math.PI * (r * r);
 			double dT;
 			if (!irc) {
-				dT = -3 / (16 * Math.PI * Const.a * (r * r)) * eos.kappa * eos.rho
-						/ Math.pow(T, 3) * L;
-			}
-			else {
-				dT = -1 / Const.gamrat * Const.G * M / (r*r) * mu * Const.mH / Const.kB;
+				dT = -3 / (16 * Math.PI * Const.a * (r * r)) * eos.kappa * eos.rho / Math.pow(T, 3) * L;
+			} else {
+				dT = -1 / Const.gamrat * Const.G * M / (r * r) * mu * Const.mH / Const.kB;
 			}
 			double dM = eos.rho * 4 * Math.PI * (r * r);
 			return new StateVector(new double[] { dP, dL, dT, dM });
@@ -61,38 +62,20 @@ public class StatStar implements IntegrationStepEventListener {
 		return differential;
 	}
 
-	public static NumericalIntegrator makePressureIntegrator(double rho, double initial_radius, double final_radius,
-			double initial_pressure, double epsilon, double kappa, double initial_L, double initial_T,
-			boolean use_RK4) {
+	public StatStar(double L, double M, double R, boolean useRK4, double X, double Y, double Z) {
+		this.X = X;
+		this.Y = Y;
+		this.Z = Z;
 
-		Function<IntegrationState, StateVector> differential = makeDifferential(rho, epsilon, kappa);
-		NumericalIntegrator integrator;
+		double dt = 0; // placeholder
+		double finalt = 0; // placeholder
 
-		if (use_RK4) {
-			integrator = new RK4Integrator(-.1, initial_radius, final_radius,
-					new StateVector(new double[] { initial_pressure, initial_L, initial_T }), differential);
+		StateVector initialState = new StateVector(new double[] { 0, L, 0, M });
+		if (useRK4) {
+			integrator = new RK4Integrator(dt, R, finalt, initialState, makeDifferential());
 		} else {
-			integrator = new EulerIntegrator(-.1, initial_radius, final_radius,
-					new StateVector(new double[] { initial_pressure, initial_L, initial_T }), differential);
+			integrator = new EulerIntegrator(dt, R, finalt, initialState, makeDifferential());
 		}
-
-		return integrator;
-	}
-
-	public static void main(String[] args) {
-
-		// NumericalIntegrator integrator = makePressureIntegrator(1000., 100., 0., 1.,
-		// false);
-		// integrator.run();
-		// System.out.println(integrator.getStateVector().state[0]);
-
-		// for (int i = 0; i < 1000; i++) {
-		// integrator.integrator.step();
-		// System.out.println();
-		// System.out.println(integrator.integrator.getStateVector().state[0]);
-		// System.out.println(integrator.integrator.getT());
-		// }
-
 	}
 
 	@Override

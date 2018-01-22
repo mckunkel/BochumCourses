@@ -6,13 +6,11 @@ import java.util.List;
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JButton;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 //This button is meant to work with text fields like the double field class. It maintains a list of text fields and enables itself only when all of the text fields have valid content. (Technically, this could be an interface, but that has not been necessary yet.) 
-public class ConditionalButton extends JButton implements DocumentListener {
+public class ConditionalButton extends JButton implements FieldUpdateListener {
 
-	private List<DoubleField> attachedFields;
+	private List<ConditionalField> attachedFields;
 	private boolean listening;
 
 	public ConditionalButton() {
@@ -46,30 +44,20 @@ public class ConditionalButton extends JButton implements DocumentListener {
 		update();
 	}
 
-	public void addField(DoubleField field) {
+	public void addField(ConditionalField field) {
 		this.attachedFields.add(field);
-		field.getDocument().addDocumentListener(this);
+		field.addFieldUpdateListener(this);
 		update();
 	}
 
-	public void removeField(DoubleField field) {
+	public void removeField(ConditionalField field) {
 		this.attachedFields.remove(field);
-		field.getDocument().removeDocumentListener(this);
+		field.removeFieldUpdateListener(this);
 		update();
 	}
 
 	@Override
-	public void changedUpdate(DocumentEvent e) {
-		update();
-	}
-
-	@Override
-	public void insertUpdate(DocumentEvent e) {
-		update();
-	}
-
-	@Override
-	public void removeUpdate(DocumentEvent e) {
+	public void fieldChangedUpdate() {
 		update();
 	}
 
@@ -77,7 +65,7 @@ public class ConditionalButton extends JButton implements DocumentListener {
 		if (this.listening) {
 			boolean all_valid = true;
 
-			for (DoubleField field : this.attachedFields) {
+			for (ConditionalField field : this.attachedFields) {
 				all_valid &= field.isContentValid();
 			}
 
