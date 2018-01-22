@@ -12,10 +12,10 @@ import statStarAntonius.integrator.StateVector;
 
 public class StatStar implements IntegrationStepEventListener {
 
-	public static final int p = 0;
-	public static final int L = 1;
-	public static final int T = 2;
-	public static final int M = 3;
+	public static final int ip = 0;
+	public static final int iL = 1;
+	public static final int iT = 2;
+	public static final int iM = 3;
 
 	double mu;
 	double X;
@@ -23,12 +23,16 @@ public class StatStar implements IntegrationStepEventListener {
 	double Z;
 	double XCNO;
 
+	double Rs;
+	double Ms;
+	double Ls;
+
 	private double prevP; // these store the value of p and T at the previous simulation step
 	private double prevT; //
 
-	boolean irc;
-	double tOverGbf;
-	double kPad;
+	boolean irc = false;
+	double tOverGbf = 0.01;
+	double kPad = 0.3; // "arbitrary value" -- statstar.f
 
 	public EquationOfState extendedState;
 
@@ -42,10 +46,10 @@ public class StatStar implements IntegrationStepEventListener {
 										// is computed each simulation step
 
 			double r = state.t;
-			double p = state.stateVector.state[StatStar.p];
-			double L = state.stateVector.state[StatStar.L];
-			double T = state.stateVector.state[StatStar.T];
-			double M = state.stateVector.state[StatStar.M];
+			double p = state.stateVector.state[StatStar.ip];
+			double L = state.stateVector.state[StatStar.iL];
+			double T = state.stateVector.state[StatStar.iT];
+			double M = state.stateVector.state[StatStar.iM];
 			EquationOfState eos = new EquationOfState(T, p, statStar);
 
 			double dP = -Const.G * eos.rho * M / (r * r);
@@ -62,20 +66,27 @@ public class StatStar implements IntegrationStepEventListener {
 		return differential;
 	}
 
-	public StatStar(double L, double M, double R, boolean useRK4, double X, double Y, double Z) {
+	public StatStar(double L, double M, double R, double dR, boolean useRK4, double X, double Y, double Z) {
 		this.X = X;
 		this.Y = Y;
 		this.Z = Z;
+		this.XCNO = Z / 2.;
+		this.mu = 1. / (2. * X + 0.75 * Y + 0.5 * Z);
 
-		double dt = 0; // placeholder
-		double finalt = 0; // placeholder
+		this.Ms = M;
+		this.Ls = L;
+		this.Rs = R;
 
-		StateVector initialState = new StateVector(new double[] { 0, L, 0, M });
+		double finalt = 0; // TODO: placeholder
+
+		StateVector initialState = surfaceIntegration(L, M, R, dR);
 		if (useRK4) {
-			integrator = new RK4Integrator(dt, R, finalt, initialState, makeDifferential());
+			integrator = new RK4Integrator(dR, R, finalt, initialState, makeDifferential());
 		} else {
-			integrator = new EulerIntegrator(dt, R, finalt, initialState, makeDifferential());
+			integrator = new EulerIntegrator(dR, R, finalt, initialState, makeDifferential());
 		}
+
+		integrator.addListener(this);
 	}
 
 	@Override
@@ -84,8 +95,8 @@ public class StatStar implements IntegrationStepEventListener {
 		// necessary tasks for each integration step, such as checking boundary
 		// conditions and updating irc
 
-		double p = event.integrationState.stateVector.state[StatStar.p];
-		double T = event.integrationState.stateVector.state[StatStar.T];
+		double p = event.integrationState.stateVector.state[StatStar.ip];
+		double T = event.integrationState.stateVector.state[StatStar.iT];
 
 		double dlPdlT = Math.log(p / this.prevP) / Math.log(T / this.prevT);
 		if (dlPdlT < Const.gamrat) {
@@ -94,6 +105,38 @@ public class StatStar implements IntegrationStepEventListener {
 			irc = false;
 		}
 
+	}
+
+	private StateVector surfaceIntegration(double L, double M, double R, double dR) {
+		double T = 0;
+		double p = 0;
+
+		for (int i = 0; i < 20; i++) { // TODO: ask for # surface steps in GUI?
+			R += dR;
+			if (!irc) {
+				T = Const.G * M * mu * Const.mH / (4.25 * Const.kB) * (1.0 / R - 1.0 / Rs);
+				double A_bf = 4.34e25 * Z * (1.0 + X) / tOverGbf;
+				double A_ff = 3.68e22 * (1.0 - Z) * (1.0 + X);
+				double Afac = A_bf + A_ff;
+				p = Math.sqrt((1.0 / 4.25) * (16.0 / 3.0 * Math.PI * Const.a * Const.c) * (Const.G * M / L)
+						* (Const.kB / (Afac * mu * Const.mH))) * Math.pow(T, 4.25);
+			} else {
+
+				T = Const.G * M * mu * Const.mH / Const.kB * (1.0 / R - 1.0 / Rs) / Const.gamrat;
+				p = kPad * Math.pow(T, Const.gamrat);
+			}
+			EquationOfState eos = new EquationOfState(T, p, this);
+			double dM = 4 * Math.PI * eos.rho * (R * R);
+			M += dM;
+
+			this.prevT = T;
+			this.prevP = p;
+			if (Math.abs(dM) > .001 * Ms) {
+				break;
+			}
+		}
+
+		return new StateVector(new double[] { p, L, T, M });
 	}
 
 }

@@ -159,7 +159,7 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 				stepSize = stepSizeField.getValue();
 				boolean useRK4 = (integrationMethodBox.getSelectedItem() == "RK4");
 				statStar = new StatStar(luminosityField.getValue(), massField.getValue(), radiusField.getRadius(),
-						useRK4, xField.getValue(), yField.getyFraction(), zField.getValue());
+						stepSizeField.getValue(), useRK4, xField.getValue(), yField.getyFraction(), zField.getValue());
 				statStar.integrator.addListener(this);
 				statStar.integrator.addListener(new FileOutputListener());
 				simulationThread = new Thread() {
@@ -311,9 +311,9 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 	@Override
 	public void nextIntegrationStep(IntegrationStepEvent event) {
 		radiusResultLabel.setText(String.format("%.4f", event.integrationState.t));
-		massResultLabel.setText(String.format("%.4f", event.integrationState.stateVector.state[StatStar.p]));
-		luminosityResultLabel.setText(String.format("%.4f", event.integrationState.stateVector.state[StatStar.L]));
-		temperatureResultLabel.setText(String.format("%.4f", event.integrationState.stateVector.state[StatStar.T]));
+		massResultLabel.setText(String.format("%.4f", event.integrationState.stateVector.state[StatStar.ip]));
+		luminosityResultLabel.setText(String.format("%.4f", event.integrationState.stateVector.state[StatStar.iL]));
+		temperatureResultLabel.setText(String.format("%.4f", event.integrationState.stateVector.state[StatStar.iT]));
 
 		if (event.finished == true) {
 			uiStopRunning();
