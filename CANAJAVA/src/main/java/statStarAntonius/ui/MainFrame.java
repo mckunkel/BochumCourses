@@ -10,6 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
+import statStarAntonius.Const;
 import statStarAntonius.StatStar;
 import statStarAntonius.integrator.FileOutputListener;
 import statStarAntonius.integrator.IntegrationStepEvent;
@@ -158,8 +159,9 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 				finalRadius = finalRadiusField.getValue();
 				stepSize = stepSizeField.getValue();
 				boolean useRK4 = (integrationMethodBox.getSelectedItem() == "RK4");
-				statStar = new StatStar(luminosityField.getValue(), massField.getValue(), radiusField.getRadius(),
-						stepSizeField.getValue(), useRK4, xField.getValue(), yField.getyFraction(), zField.getValue());
+				statStar = new StatStar(luminosityField.getValue() * Const.lSolar, massField.getValue() * Const.mSolar,
+						radiusField.getRadius(), stepSizeField.getValue(), useRK4, xField.getValue(),
+						yField.getyFraction(), zField.getValue());
 				statStar.integrator.addListener(this);
 				statStar.integrator.addListener(new FileOutputListener());
 				simulationThread = new Thread() {

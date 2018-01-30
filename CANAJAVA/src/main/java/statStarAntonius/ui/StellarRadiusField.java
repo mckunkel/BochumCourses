@@ -39,9 +39,9 @@ public class StellarRadiusField extends JLabel implements DocumentListener {
 	public void update() {
 		if (this.temperatureField.isContentValid() && this.luminosityField.isContentValid()) {
 			double T = temperatureField.getValue();
-			double L = luminosityField.getValue();
+			double L = luminosityField.getValue() * Const.lSolar;
 			radius = Math.sqrt(L / (4 * Math.PI * Const.sigma)) / (T * T);
-			this.setText(String.format("%.4f", radius));
+			this.setText(String.format("%.4f", radius / Const.rSolar));
 			valid = true;
 		} else {
 			this.setText("--");

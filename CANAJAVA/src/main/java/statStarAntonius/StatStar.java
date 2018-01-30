@@ -23,9 +23,9 @@ public class StatStar implements IntegrationStepEventListener {
 	double Z;
 	double XCNO;
 
-	double Rs;
-	double Ms;
-	double Ls;
+	final double Rs;
+	final double Ms;
+	final double Ls;
 
 	private double prevP; // these store the value of p and T at the previous simulation step
 	private double prevT; //
