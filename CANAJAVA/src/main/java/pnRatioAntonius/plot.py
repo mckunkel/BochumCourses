@@ -18,16 +18,23 @@ def read_data(filename):
 
     return np.array(T), np.array(ratio)
 
-T, ratio = read_data("../../../../pn-ratio.csv")
 Tnd, rationd = read_data("../../../../pn-ratio-nodecouple.csv")
 Tnf, rationf = read_data("../../../../pn-ratio-nofreeze.csv")
+T, ratio = read_data("../../../../pn-ratio.csv")
 
-plt.plot(T, ratio)
 plt.plot(Tnd, rationd)
 plt.plot(Tnf, rationf)
+plt.plot(T, ratio)
+
+plt.text(7, .05, "Protons and neutrons are\nin thermal equilibrium.")
+plt.text(.27, .07, "Neutrons decay\ninto protons.")
+plt.text(.028, .108, "Stable\nnuclei.")
+
+plt.annotate(xy=(.99, .29), xytext=(1.56, .56), s="Neutrons and protons\ndecouple.", arrowprops={"arrowstyle": "->"}) 
+plt.annotate(xy=(.07, .21), xytext=(.12, .33), s="Neutrons combine with\nprotons to form deute-\nrium, which is stable.\nNeutron decay stops.", arrowprops={"arrowstyle": "->"}) 
+
 plt.semilogx()
 plt.semilogy()
-#plt.gca().invert_xaxis()
 plt.xlabel("T [MeV]")
 plt.ylabel("$N_n/N_p$")
 plt.xlim(10, 0.01)
