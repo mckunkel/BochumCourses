@@ -18,9 +18,9 @@ def read_data(filename):
 
     return np.array(T), np.array(ratio)
 
-T, ratio = read_data("../../../../pn-ratio.csv")
-Tnd, rationd = read_data("../../../../pn-ratio-nodecouple.csv")
-Tnf, rationf = read_data("../../../../pn-ratio-nofreeze.csv")
+T, ratio = read_data("../../../../../pnRatioAntonius/pn-ratio.csv")
+Tnd, rationd = read_data("../../../../../pnRatioAntonius/pn-ratio-nodecouple.csv")
+Tnf, rationf = read_data("../../../../../pnRatioAntonius/pn-ratio-nofreeze.csv")
 
 plt.plot(T, ratio)
 plt.plot(Tnd, rationd)
