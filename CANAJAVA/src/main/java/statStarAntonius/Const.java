@@ -1,5 +1,6 @@
 package statStarAntonius;
 
+// Physical constants needed by StatStar
 public class Const {
 
 	private Const() {
@@ -18,9 +19,4 @@ public class Const {
 	public static final double mH = 1.673534e-24; // g
 	public static final double gamma = 5. / 3.; // adiabatic gamma for a momatomic gas
 	public static final double gamrat = gamma / (gamma - 1.0); // delimiter between convection and radiation
-
-	public static final double P0 = 0.0;// surface Pressure
-	public static final double T0 = 0.0;// surface temperature
-	public static final int nStart = 10;
-	public static final int nStop = 1000;
 }

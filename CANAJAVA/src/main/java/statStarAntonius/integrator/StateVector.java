@@ -1,5 +1,8 @@
 package statStarAntonius.integrator;
 
+// This integration state vector provides convenience methods commonly needed by
+// numerical integration methods, such as multiplying the state by a constant or
+// adding to states together.
 public class StateVector {
 
 	public double[] state;

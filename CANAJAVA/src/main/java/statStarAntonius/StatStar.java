@@ -10,6 +10,9 @@ import statStarAntonius.integrator.NumericalIntegrator;
 import statStarAntonius.integrator.RK4Integrator;
 import statStarAntonius.integrator.StateVector;
 
+// This class contains the StatStar implementation. It handles the surface
+// pre-integration, and sets up the main body integration using either an RK4 or
+// Euler integrator.
 public class StatStar implements IntegrationStepEventListener {
 
 	public static final int ip = 0;

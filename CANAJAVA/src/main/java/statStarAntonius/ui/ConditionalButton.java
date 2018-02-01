@@ -7,7 +7,9 @@ import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JButton;
 
-//This button is meant to work with text fields like the double field class. It maintains a list of text fields and enables itself only when all of the text fields have valid content. (Technically, this could be an interface, but that has not been necessary yet.) 
+// This button is meant to work with text fields implementing the
+// ConditionalField interface. It maintains a list of text fields and enables
+// itself only when all of the text fields have valid content.
 public class ConditionalButton extends JButton implements FieldUpdateListener {
 
 	private List<ConditionalField> attachedFields;

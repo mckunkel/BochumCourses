@@ -10,7 +10,10 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.Document;
 
-//A text field that checks whether its current value can be parsed as a double, and changes its color and internal state depending on that.
+// A text field that checks whether its current value can be parsed as a double,
+// and changes its color and internal state depending on that.
+// It also implements ConditionalField so it can be used in conjunction with
+// ConditionalButton.
 public class DoubleField extends JTextField implements DocumentListener, ConditionalField {
 
 	static final Color normal_color = new Color(255, 255, 255);

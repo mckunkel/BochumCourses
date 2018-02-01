@@ -4,6 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+// Generic numerical integrator superclass. This also provides convenience
+// default implementations to provide an IntegrationStepEvent notifier and
+// handle starting and stopping the simulation.
+// In most cases, subclassed implementations only need to provide their own step
+// function; to take full advantage of the features provided by this superclass,
+// implementations should ensure to call super.step() in their step function.
 public abstract class NumericalIntegrator {
 
 	protected double dt;

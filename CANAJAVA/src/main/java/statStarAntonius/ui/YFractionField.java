@@ -6,7 +6,10 @@ import java.util.List;
 
 import javax.swing.JLabel;
 
-//TODO: make common superclass for this and StellarRadiusField?
+// This field displays the Y mass fraction in dependence of the X and Z fields,
+// which are settable by the user. It also implements ConditionalField so it can
+// be used with ConditionalButton to ensure that the simulation is run only when
+// there is a sensible Y value.
 public class YFractionField extends JLabel implements FieldUpdateListener, ConditionalField {
 
 	public static Color normal_color = new Color(0, 0, 0);

@@ -1,6 +1,10 @@
 package statStarAntonius;
 
-//compute density, opacity, and energy generation rate at given parameters
+// Compute density, opacity, and energy generation rate at given parameters.
+// Since it is not possible for a Java function to return multiple parameters,
+// they are returned in the EquationOfState object. The function evaluation
+// happens in the object's constructor. Naturally, all of the object's fields
+// are thus final.
 public class EquationOfState {
 
 	final double rho;

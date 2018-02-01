@@ -110,13 +110,13 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 		massField.setValidFunc(x -> (x > 0));
 		runButton.addField(massField);
 
-		luminosityLabel = new JLabel("surface luminosity");
+		luminosityLabel = new JLabel("luminosity");
 		luminosityField = new DoubleField(5);
 		luminosityField.setValidFunc(x -> (x > 0));
 		luminosityResultLabel = new JLabel("--");
 		runButton.addField(luminosityField);
 
-		temperatureLabel = new JLabel("surface temperature");
+		temperatureLabel = new JLabel("temperature");
 		temperatureField = new DoubleField(5);
 		temperatureField.setValidFunc(x -> (x > 0));
 		temperatureResultLabel = new JLabel("--");
@@ -126,20 +126,13 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 		radiusField = new StellarRadiusField(temperatureField, luminosityField);
 		radiusResultLabel = new JLabel("--");
 
-		integrationMethodLabel = new JLabel("Integration method");
+		integrationMethodLabel = new JLabel("integration method");
 		integrationMethodBox = new JComboBox<>(integrationMethods);
 
 		progressBar = new JProgressBar();
 
-		columnHeaderInitial = new JLabel("initial values");
-		columnHeaderFinal = new JLabel("final values");
-
-		// use preset values that make the simulation run long enough so you can see the
-		// progress bar
-		xField.setText("1");
-		massField.setText("1");
-		stepSizeField.setText("-0.00001");
-		finalRadiusField.setText("1");
+		columnHeaderInitial = new JLabel("simulation parameters");
+		columnHeaderFinal = new JLabel("computed values");
 	}
 
 	private void setListeners() {
@@ -152,6 +145,7 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 		});
 	}
 
+	// Set up and start the simulation
 	private void startSimulation() {
 		if (running == false) {
 			try {
@@ -176,6 +170,14 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 		}
 	}
 
+	private void stopSimulation() {
+		if (running == true) {
+			statStar.integrator.stop();
+			uiStopRunning();
+		}
+	}
+
+	// Modify the UI to reflect that the simulation is running
 	private void uiStartRunning() {
 		running = true;
 		runButton.setText("Stop");
@@ -191,6 +193,7 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 		temperatureField.setEditable(false);
 	}
 
+	// Modify the UI to reflect that the simulation has stopped
 	private void uiStopRunning() {
 		running = false;
 		runButton.setText("Run");
@@ -203,13 +206,6 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 		finalRadiusField.setEditable(true);
 		luminosityField.setEditable(true);
 		temperatureField.setEditable(true);
-	}
-
-	private void stopSimulation() {
-		if (running == true) {
-			statStar.integrator.stop();
-			uiStopRunning();
-		}
 	}
 
 	public void constructLayout() {
@@ -239,18 +235,6 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 				GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
 
 		contentPane.add(zField, new GridBagConstraints(1, y++, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
-				GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-
-		contentPane.add(finalRadiusLabel, new GridBagConstraints(0, y, 1, 1, 0., 0.,
-				GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-
-		contentPane.add(finalRadiusField, new GridBagConstraints(1, y++, 1, 1, 0., 0.,
-				GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-
-		contentPane.add(stepSizeLabel, new GridBagConstraints(0, y, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
-				GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-
-		contentPane.add(stepSizeField, new GridBagConstraints(1, y++, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
 				GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
 
 		contentPane.add(radiusLabel, new GridBagConstraints(0, y, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
@@ -295,6 +279,18 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 		contentPane.add(integrationMethodBox, new GridBagConstraints(1, y++, 1, 1, 1.0, 0.0,
 				GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
 
+		contentPane.add(finalRadiusLabel, new GridBagConstraints(0, y, 1, 1, 0., 0.,
+				GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+
+		contentPane.add(finalRadiusField, new GridBagConstraints(1, y++, 1, 1, 0., 0.,
+				GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+
+		contentPane.add(stepSizeLabel, new GridBagConstraints(0, y, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
+				GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+
+		contentPane.add(stepSizeField, new GridBagConstraints(1, y++, 1, 1, 0., 0., GridBagConstraints.BASELINE_LEADING,
+				GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+
 		contentPane.add(runButton, new GridBagConstraints(0, y++, 2, 1, 0., 0., GridBagConstraints.CENTER,
 				GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
 
@@ -306,7 +302,7 @@ public class MainFrame extends JFrame implements IntegrationStepEventListener {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 		pack();
-		setSize(640, 400);
+		setSize(640, 480);
 		setVisible(true);
 	}
 

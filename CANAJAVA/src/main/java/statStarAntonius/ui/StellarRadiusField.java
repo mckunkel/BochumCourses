@@ -1,12 +1,13 @@
 package statStarAntonius.ui;
 
 import javax.swing.JLabel;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 import statStarAntonius.Const;
 
-public class StellarRadiusField extends JLabel implements DocumentListener {
+// This custom field always displays the stellar radius in dependence of surface
+// temperature and luminosity. It automatically updates whenever one of those
+// fields changes.
+public class StellarRadiusField extends JLabel implements FieldUpdateListener {
 
 	private DoubleField temperatureField;
 	private DoubleField luminosityField;
@@ -17,22 +18,12 @@ public class StellarRadiusField extends JLabel implements DocumentListener {
 		super("--");
 		this.temperatureField = temperatureField;
 		this.luminosityField = luminosityField;
-		luminosityField.getDocument().addDocumentListener(this);
-		temperatureField.getDocument().addDocumentListener(this);
+		luminosityField.addFieldUpdateListener(this);
+		temperatureField.addFieldUpdateListener(this);
 	}
 
 	@Override
-	public void insertUpdate(DocumentEvent e) {
-		update();
-	}
-
-	@Override
-	public void removeUpdate(DocumentEvent e) {
-		update();
-	}
-
-	@Override
-	public void changedUpdate(DocumentEvent e) {
+	public void fieldChangedUpdate() {
 		update();
 	}
 
